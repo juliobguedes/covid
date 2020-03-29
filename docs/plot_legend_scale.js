@@ -1,4 +1,4 @@
-const plot_legend = (svg) => {
+const plot_legend = () => {
     const linearColor = d3.scaleLinear()
         .domain([0, 2100])
         .rangeRound([600, 850]);

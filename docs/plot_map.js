@@ -1,6 +1,4 @@
-var index = 0;
-
-const plotMap = (svg, data, dimensions) => {
+const plotMap = (data) => {
     const countries = data.features;
     svg.append('g')
             .attr('class', 'countries')

@@ -1,15 +1,13 @@
-var moving = false;
+const createSlider = () => {
+    sliderCurrentValue = dimensions.margin;
+    sliderTargetValue = dimensions.width - dimensions.margin;
 
-const createSlider = (svg, dimensions, callback) => {
-    let sliderCurrentValue = dimensions.margin;
-    const sliderTargetValue = dimensions.width - dimensions.margin;
-
-    const timeScale = d3.scaleTime()
+    timeScale = d3.scaleTime()
         .domain([startDate, endDate])
         .range([dimensions.margin, sliderTargetValue])
         .clamp(true);
 
-    const slider = svg.append('g')
+    slider = svg.append('g')
         .attr('class', 'slider')
         .attr('transform', `translate(0, ${dimensions.height - dimensions.margin})`);
 
@@ -26,7 +24,7 @@ const createSlider = (svg, dimensions, callback) => {
             .on('start drag', () => {
                 sliderCurrentValue = d3.event.x;
                 const invTime = timeScale.invert(sliderCurrentValue);
-                update(invTime, handle, label, timeScale, callback);
+                update(invTime);
             })
         );
 
@@ -42,20 +40,20 @@ const createSlider = (svg, dimensions, callback) => {
         .attr('text-anchor', 'middle')
         .text(d => formatDateIntoYear(d));
     
-    const handle = slider.insert('circle', '.track-overlay')
+    handle = slider.insert('circle', '.track-overlay')
         .attr('class', 'handle')
         .attr('r', 9);
     
-    const label = slider.append('text')
+    label = slider.append('text')
         .attr('class', 'label')
         .attr('text-anchor', 'middle')
         .text(formatDate(startDate))
         .attr('transform', `translate(0, ${-25})`);
 
-    update(new Date('2020-01-22'), handle, label, timeScale, callback, ignore=true);
+    update(new Date('2020-01-22'), ignore=true);
 };
 
-const update = (value, handle, label, timeScale, callback, ignore=false) => {
+const update = (value, ignore=false) => {
     handle.attr('cx', timeScale(value));
     label.attr('x', timeScale(value))
         .text(formatDate(value));

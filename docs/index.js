@@ -1,14 +1,51 @@
+
+const startBtn = () => {
+    moving = true;
+    intervalId = setInterval(step, 1000);
+    startButton.text('Pause');
+}
+
+const stopBtn = (reset=false) => {
+    moving = false;
+    if (reset) sliderCurrentValue = 0;
+    clearInterval(intervalId);
+    startButton.text('Start');
+}
+
+const step = () => {
+    const yst = yesterday();
+    const totalDays = getDateIndex(yst);
+    update(timeScale.invert(sliderCurrentValue));
+    sliderCurrentValue += (dimensions.width - dimensions.margin) / totalDays;
+    if (sliderCurrentValue > (dimensions.width - dimensions.margin)) {
+        stopBtn(true);
+    }
+
+    console.log(sliderCurrentValue);
+};
+
 const ready = (error, data) => {
     if (error) throw error;
 
-    const svg = d3.select('svg');
+    svg = d3.select('svg');
+    startButton = d3.select('#start-button');
     const width = +svg.attr('width');
     const height = +svg.attr('height');
 
-    const dimensions = { width, height, margin: 50 };
-    const callback = () => plotMap(svg, data, dimensions);
-    createSlider(svg, dimensions, callback);
-    plot_legend(svg);
+    dimensions = { width, height, margin: 50 };
+    callback = () => plotMap(data);
+    createSlider();
+    plot_legend();
+
+    startButton.on('click', () => {
+        console.log('btn clicked');
+        const btnLabel = startButton.text();
+        if (btnLabel === 'Pause') {
+            stopBtn();
+        } else {
+            startBtn();
+        }
+    });
 }
 
 d3.queue()

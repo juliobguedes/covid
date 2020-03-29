@@ -1,7 +1,7 @@
 const path = d3.geoPath();
 const colorScale = d3.scaleThreshold().domain([
-    0, 300, 600, 900, 1200, 1500, 1800, 2100
-]).range(d3.schemeBlues[8]);
+    0, 300, 600, 900, 1200, 1500, 1800, 2100, 2400, 2700
+]).range(d3.schemeBlues[9]);
 
 const yesterday = () => {
     const date = new Date();

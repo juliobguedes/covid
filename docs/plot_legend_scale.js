@@ -1,0 +1,41 @@
+const plot_legend = (svg) => {
+    const linearColor = d3.scaleLinear()
+        .domain([0, 2100])
+        .rangeRound([600, 850]);
+
+    const g = svg.append('g')
+        .attr('class', 'key')
+        .attr('transform', 'translate(100, 50)');
+
+    g.selectAll('rect')
+        .data(colorScale.range().map((d) => {
+            const invD = colorScale.invertExtent(d);
+            if (invD[0] == null) invD[0] = linearColor.domain()[0];
+            if (invD[1] == null) invD[1] = linearColor.domain()[1];
+            return invD;
+        }))
+        .enter()
+            .append('rect')
+            .attr('height', '8')
+            .attr('x', d => linearColor(d[0]))
+            .attr('width', d => linearColor(d[1]) - linearColor(d[0]))
+            .attr('fill', d => colorScale(d[0]))
+            .attr('stroke-width', 1.5)
+            .attr('stroke', '#000');
+
+    g.append("text")
+        .attr("class", "caption")
+        .attr("x", linearColor.range()[0])
+        .attr("y", -6)
+        .attr("fill", "#000")
+        .attr("text-anchor", "start")
+        .attr("font-weight", "bold")
+        .text('Total de Casos Confirmados');
+      
+    g.call(d3.axisBottom(linearColor)
+        .tickSize(13)
+        .tickFormat(function(x, i) { return (i ? x : x + " casos"); })
+        .tickValues(colorScale.domain()))
+    .select(".domain")
+        .remove();
+}

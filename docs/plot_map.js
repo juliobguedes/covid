@@ -4,6 +4,7 @@ const plotMap = (svg, data, dimensions) => {
     const countries = data.features;
     svg.append('g')
             .attr('class', 'countries')
+            .attr('transform', 'translate(0, 50)')
         .selectAll('path')
         .data(countries)
         .enter()
@@ -11,7 +12,7 @@ const plotMap = (svg, data, dimensions) => {
             .attr('fill', (d) => {
                 const confirmed = d.properties.confirmed;
                 if (!confirmed) {
-                    return '#e0e0eb';
+                    return '#c0c0c0';
                 }
                 const colorValue = confirmed[index];
                 return colorScale(colorValue);

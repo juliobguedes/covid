@@ -8,6 +8,7 @@ const ready = (error, data) => {
     const dimensions = { width, height, margin: 50 };
     const callback = () => plotMap(svg, data, dimensions);
     createSlider(svg, dimensions, callback);
+    plot_legend(svg);
 }
 
 d3.queue()

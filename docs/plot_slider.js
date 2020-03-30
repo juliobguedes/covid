@@ -56,7 +56,7 @@ const createSlider = () => {
         .text(formatDate(startDate))
         .attr('transform', `translate(0, ${-25})`);
 
-    update(new Date('2020-01-22'), ignore=true);
+    update(new Date(2020, 00, 22), ignore=true);
 };
 
 const update = (value, ignore=false) => {

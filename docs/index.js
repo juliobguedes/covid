@@ -1,13 +1,17 @@
 
 const startBtn = () => {
     moving = true;
+    if (sliderCurrentValue >= dimensions.width - dimensions.margin) {
+        // this resets the slider if it has reached the end before
+        index = -1;
+        sliderCurrentValue = 50;
+    }
     intervalId = setInterval(step, 1000);
     startButton.text('Pause');
 }
 
-const stopBtn = (reset=false) => {
+const stopBtn = () => {
     moving = false;
-    if (reset) sliderCurrentValue = 0;
     clearInterval(intervalId);
     startButton.text('Start');
 }
@@ -17,15 +21,14 @@ const step = () => {
         zooming = false;
         return;
     }
-    const yst = yesterday();
-    const totalDays = getDateIndex(yst);
-    update(timeScale.invert(sliderCurrentValue));
-    sliderCurrentValue += (dimensions.width - dimensions.margin) / totalDays;
-    if (sliderCurrentValue > (dimensions.width - dimensions.margin)) {
-        stopBtn(true);
-    }
 
-    console.log(sliderCurrentValue);
+    const nextDay = tomorrow()
+    sliderCurrentValue = timeScale(nextDay);
+    update(nextDay);
+
+    if (sliderCurrentValue >= (dimensions.width - dimensions.margin)) {
+        stopBtn();
+    }
 };
 
 const ready = (error, data) => {
@@ -43,7 +46,6 @@ const ready = (error, data) => {
     plot_legend();
 
     startButton.on('click', () => {
-        console.log('btn clicked');
         const btnLabel = startButton.text();
         if (btnLabel === 'Pause') {
             stopBtn();

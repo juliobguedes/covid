@@ -22,7 +22,7 @@ let label;
 let timeScale;
 
 
-const startDate = new Date('2020-01-22');
+const startDate = new Date(2020, 0, 22);
 
 const formatDateIntoYear = d3.timeFormat('%d %b %Y');
 const formatDate = d3.timeFormat('%d %b %Y');
@@ -37,20 +37,30 @@ const colorScale = d3.scaleThreshold().domain([
 const yesterday = () => {
     const date = new Date();
     date.setDate(date.getDate() - 1);
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    return date;
+};
+
+const tomorrow = () => {
+    const date = new Date(startDate.getTime());
+    date.setDate(date.getDate() + index + 1);
     return date;
 };
 
 const getDateIndex = (date) => {
     const lengthOfDay = 24 * 60 * 60 * 1000;
-    const firstDay = new Date('2020-01-22');
+    const firstDay = new Date(2020, 0, 22);
     const diff = Math.round(Math.abs((date - firstDay) / lengthOfDay));
     return diff;
 };
-
-const endDate = yesterday();
 
 const customTransform = (transformObj) => {
     const { x, y, k } = transformObj;
     const str = `translate(${x}, ${y + 50}) scale(${k})`;
     return str;
-}
+};
+
+const endDate = yesterday();

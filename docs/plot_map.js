@@ -19,6 +19,9 @@ const plotMap = (data) => {
                 return '#c0c0c0';
             }
             const colorValue = confirmed[index];
+            if (colorValue === 0) {
+                return '#fff';
+            }
             return colorScale(colorValue);
         })
         .attr('d', path)

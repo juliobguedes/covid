@@ -1,11 +1,16 @@
 const plot_legend = () => {
+    const legendDiv = d3.select('#legend')
+        .append('svg')
+        .attr('width', dimensions.width)
+        .attr('height', '50');
+
     const linearColor = d3.scaleLinear()
         .domain([0, 2100])
         .rangeRound([600, 850]);
 
-    const g = svg.append('g')
+    const g = legendDiv.append('g')
         .attr('class', 'key')
-        .attr('transform', 'translate(100, 50)');
+        .attr('transform', 'translate(100, 25)');
 
     g.selectAll('rect')
         .data(colorScale.range().map((d) => {

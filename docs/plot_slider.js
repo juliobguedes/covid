@@ -1,4 +1,10 @@
 const createSlider = () => {
+
+    const sliderdiv = d3.select('#slider')
+        .append('svg')
+        .attr('width', dimensions.width)
+        .attr('height', '100');
+
     sliderCurrentValue = dimensions.margin;
     sliderTargetValue = dimensions.width - dimensions.margin;
 
@@ -7,9 +13,9 @@ const createSlider = () => {
         .range([dimensions.margin, sliderTargetValue])
         .clamp(true);
 
-    slider = svg.append('g')
+    slider = sliderdiv.append('g')
         .attr('class', 'slider')
-        .attr('transform', `translate(0, ${dimensions.height - dimensions.margin})`);
+        .attr('transform', `translate(0, 50)`);
 
     slider.append('line')
         .attr('class', 'track')

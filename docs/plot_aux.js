@@ -9,6 +9,8 @@ let callback;
 
 // Variables related with the map
 let index = 0;
+let mapScale = 'translate(0, 50)';
+let zooming = false;
 
 // Variables related with the slider
 let moving = false;
@@ -46,3 +48,9 @@ const getDateIndex = (date) => {
 };
 
 const endDate = yesterday();
+
+const customTransform = (transformObj) => {
+    const { x, y, k } = transformObj;
+    const str = `translate(${x}, ${y + 50}) scale(${k})`;
+    return str;
+}

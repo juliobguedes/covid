@@ -13,6 +13,10 @@ const stopBtn = (reset=false) => {
 }
 
 const step = () => {
+    if (zooming) {
+        zooming = false;
+        return;
+    }
     const yst = yesterday();
     const totalDays = getDateIndex(yst);
     update(timeScale.invert(sliderCurrentValue));
@@ -28,6 +32,7 @@ const ready = (error, data) => {
     if (error) throw error;
 
     svg = d3.select('svg');
+    zoom_handler(svg);
     startButton = d3.select('#start-button');
     const width = +svg.attr('width');
     const height = +svg.attr('height');

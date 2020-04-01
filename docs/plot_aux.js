@@ -11,6 +11,7 @@ let callback;
 let index = 0;
 let mapScale = 'translate(0, 50)';
 let zooming = false;
+let country = 'World';
 
 // Variables related with the slider
 let moving = false;

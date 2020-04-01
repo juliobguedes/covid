@@ -34,7 +34,7 @@ const step = () => {
 const ready = (error, data) => {
     if (error) throw error;
 
-    svg = d3.select('svg');
+    svg = d3.select('#map').select('svg');
     zoom_handler(svg);
     startButton = d3.select('#start-button');
     const width = +svg.attr('width');

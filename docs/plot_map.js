@@ -25,8 +25,9 @@ const plotMap = (data) => {
             return colorScale(colorValue);
         })
         .attr('d', path)
+        .on('click', (d) => { country = d.properties.COUNTRY; })
         .append('title')
-        .text(d => d.properties.COUNTRY);
+        .text(d => d.properties.COUNTRY)
 };
 
 const zoom_actions = () => {

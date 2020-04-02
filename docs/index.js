@@ -35,7 +35,9 @@ const ready = (error, data) => {
     if (error) throw error;
 
     svg = d3.select('#map').select('svg');
-    zoom_handler(svg);
+
+    svg.call(zoom_handler).on("wheel.zoom", null);
+    
     startButton = d3.select('#start-button');
     const width = +svg.attr('width');
     const height = +svg.attr('height');

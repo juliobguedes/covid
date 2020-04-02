@@ -34,7 +34,7 @@ const zoom_actions = () => {
     zooming = true;
     const transform = d3.event.transform;
     mapScale = transform ? customTransform(transform) : mapScale;
-    d3.selectAll('path').attr('transform', d3.event.transform);
+    d3.selectAll('path').attr('transform', transform);
 };
 
 const zoom_handler = d3.zoom()

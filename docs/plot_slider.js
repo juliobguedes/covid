@@ -44,6 +44,7 @@ const createSlider = () => {
         .attr('x', timeScale)
         .attr('y', 10)
         .attr('text-anchor', 'middle')
+        .attr('font-size', '12px')
         .text(d => formatDateIntoYear(d));
     
     handle = slider.insert('circle', '.track-overlay')

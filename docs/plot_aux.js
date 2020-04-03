@@ -2,6 +2,7 @@
 // function. The order of execution assures the
 // proper assignment of each variable.
 let svg;
+let svgChart;
 let dimensions;
 let intervalId;
 let startButton;
@@ -22,6 +23,15 @@ let handle;
 let label;
 let timeScale;
 
+// Chart variables
+const chartDimensions = {
+    width: 1000, height: 600,
+    top: 10, right: 20, bottom: 30, left:45,
+};
+let xAxisScale;
+let yAxisScale;
+
+// General Variables
 
 const startDate = new Date(2020, 0, 22);
 

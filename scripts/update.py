@@ -15,7 +15,10 @@ ts_n_deaths = pd.read_csv(f'{datapath}/time_series_covid19_deaths_global_narrow.
 ts_n_recov = pd.read_csv(f'{datapath}/time_series_covid19_recovered_global_narrow.csv')
 ts_n_conf = pd.read_csv(f'{datapath}/time_series_covid19_confirmed_global_narrow.csv')
 
-new_columns = list(ts_n_conf.columns)[:-1] + ['Confirmed']
+new_columns = list(ts_n_conf.columns)
+for i, v in enumerate(new_columns):
+    if v == 'Value': new_columns[i] = 'Confirmed'
+
 ts_n_conf.columns = new_columns
 
 ts_all = ts_n_conf.copy()

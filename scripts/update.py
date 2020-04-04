@@ -8,29 +8,35 @@ import numpy as np
 import pandas as pd
 import subprocess, sys, os, json
 
-print('Running data transformation')
+print('Running data transformation: Map')
 
 datapath = '../data'
 ts_n_deaths = pd.read_csv(f'{datapath}/time_series_covid19_deaths_global_narrow.csv')
+ts_n_deaths = ts_n_deaths.loc[1:].reset_index(drop=True)
+
 ts_n_recov = pd.read_csv(f'{datapath}/time_series_covid19_recovered_global_narrow.csv')
+ts_n_recov = ts_n_recov.loc[1:].reset_index(drop=True)
+
 ts_n_conf = pd.read_csv(f'{datapath}/time_series_covid19_confirmed_global_narrow.csv')
+ts_n_conf = ts_n_conf.loc[1:].reset_index(drop=True)
 
-new_columns = list(ts_n_conf.columns)
-for i, v in enumerate(new_columns):
-    if v == 'Value': new_columns[i] = 'Confirmed'
+ts_n_deaths = ts_n_deaths.astype({ 'Value': 'int64' })
+ts_n_recov = ts_n_recov.astype({ 'Value': 'int64' })
+ts_n_conf = ts_n_conf.astype({ 'Value': 'int64' })
 
-ts_n_conf.columns = new_columns
+grouped_deaths = ts_n_deaths.groupby(['Country/Region', 'Date']).agg({ 'Value': 'sum' })
+grouped_recov = ts_n_recov.groupby(['Country/Region', 'Date']).agg({ 'Value': 'sum' })
+grouped_conf = ts_n_conf.groupby(['Country/Region', 'Date']).agg({ 'Value': 'sum' })
 
-ts_all = ts_n_conf.copy()
-ts_all['Recovered'] = ts_n_recov['Value']
-ts_all['Deaths'] = ts_n_deaths['Value']
-ts = ts_all.loc[1:]
-ts = ts.fillna(0)
-ts = ts.astype({ 'Confirmed': 'int', 'Recovered': 'int', 'Deaths': 'int' })
+grouped_deaths.columns = ['Deaths']
+grouped_recov.columns = ['Recovered']
+grouped_conf.columns = ['Confirmed']
 
-ts_grouped = ts.groupby(['Country/Region', 'Date']).agg({ 'Confirmed': 'sum', 'Recovered': 'sum', 'Deaths': 'sum' })
+grouped = grouped_deaths.merge(grouped_recov, left_index=True, right_index=True)
+grouped = grouped.merge(grouped_conf, left_index=True, right_index=True)
+grouped.reset_index(drop=False, inplace=True)
 
-countries = ts['Country/Region'].unique()
+countries = grouped['Country/Region'].unique()
 
 mapping = {
     'Congo (Brazzaville)': 'Congo',
@@ -60,22 +66,71 @@ mapping = {
 covid_jsons = []
 
 for country in countries:
-    ts_segment = ts[ts['Country/Region'] == country].copy().reset_index()
-    ts_grouped_segment = ts_grouped.loc[country].reset_index()
+    ts_segment = grouped[grouped['Country/Region'] == country].copy().reset_index()
     
     covid_json = {
         'country': mapping[country] if country in mapping else country,
-        'latitude': ts_segment.loc[0]['Lat'],
-        'longitude': ts_segment.loc[0]['Long'],
-        'dates': ts_grouped_segment['Date'].tolist(),
-        'confirmed': ts_grouped_segment['Confirmed'].tolist(),
-        'deaths': ts_grouped_segment['Deaths'].tolist(),
-        'recovered': ts_grouped_segment['Recovered'].tolist()
+        'latitude': ts_n_deaths.loc[1]['Lat'],
+        'longitude': ts_n_deaths.loc[1]['Long'],
+        'dates': ts_segment['Date'].tolist(),
+        'confirmed': ts_segment['Confirmed'].tolist(),
+        'deaths': ts_segment['Deaths'].tolist(),
+        'recovered': ts_segment['Recovered'].tolist()
     }
     covid_jsons.append(covid_json)
 
 with open(f'{datapath}/covid_updated.json', 'w') as json_path:
     json.dump(covid_jsons, json_path)
+    
+print('Running data transformation: Charts')
+
+chart_json = {}
+daily_data = {}
+
+for country in countries:
+    segment = grouped[grouped['Country/Region'] == country].reset_index()
+
+    daily = []
+    for index, row in segment.iterrows():
+        daily.append({
+            'date': row['Date'],
+            'confirmed': row['Confirmed'],
+            'deaths': row['Deaths'],
+            'recovered': row['Deaths']
+        })
+        
+        if row['Date'] in daily_data:
+            daily_data[row['Date']]['confirmed'] += row['Confirmed']
+            daily_data[row['Date']]['deaths'] += row['Deaths']
+            daily_data[row['Date']]['recovered'] += row['Recovered']
+        else:
+            daily_data[row['Date']] = {
+                'confirmed': row['Confirmed'],
+                'deaths': row['Deaths'],
+                'recovered': row['Recovered']
+            }
+    
+    country_name = mapping[country] if country in mapping else country
+    chart_json[country_name] = {
+        'country': country_name,
+        'data': daily
+    }
+
+
+world_data = []
+for key in daily_data.keys():
+    daily_data[key]['date'] = key
+    world_data.append(daily_data[key])
+    
+world_obj = {
+    'country': 'World',
+    'data': world_data
+}
+
+chart_json['World'] = world_obj
+
+with open(f'{datapath}/covid_chart.json', 'w') as covid_chart:
+    json.dump(chart_json, covid_chart)
 
 print('Running map generation')
 subprocess.call('./update.sh', shell=True)

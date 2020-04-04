@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COVID-19 Time-Lapse</title>
+    <title>COVID-19 Timeline</title>
 
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
@@ -16,6 +16,7 @@
     <script src="./index.js"></script>
 
     <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
     <h1>COVID-19 Timeline Overview</h1>
@@ -37,13 +38,28 @@
             mapa estão disponíveis
             <a href="https://github.com/juliobguedes/covid">neste repositório do GitHub</a>.
             Sinta-se livre e encorajado para sugerir adições, modificações, abrir issues e pull
-            requests no repositório.
+            requests no repositório. Ao fim da página, alguns links de contato estão disponíveis.
+        </p>
+        <p>
+            Na visualização abaixo, existem dados que não são visíveis de imediato. Ao colocar
+            o mouse em cima de algum país numa data específica, você verá um breve relato da
+            situação do país naquele dia. Ao clicar em um país, os gráficos abaixo do mapa serão
+            atualizados para mostrar os dados do país clicado ao invés dos dados do mundo. Além
+            disso, também existem os botões que permite que você altere a variável que está sendo
+            visualizada na cor do mapa.
         </p>
         <p>
             No momento, os dados desta página estão sendo atualizados manualmente todos os dias,
             utilizando os scripts contidos no repositório. Dessa forma, é possível que caso
             acesse pouco após meia noite ou durante a madrugada, a página ainda não esteja
             atualizada com os dados do dia anterior.
+        </p>
+        <p>
+            Se você está interessado em dados do Brasil, recomendo que veja
+            <a href="https://www.kaggle.com/elloaguedes/panorama-do-covid-19-no-brasil">
+            este kernel no kaggle</a>, que mostra muito bem a situação de cada estado.
+            Além disso, lá você poderá encontrar exemplos de como aplicar técnicas de
+            aprendizagem de máquina para prever o número de casos de COVID-19 no Brasil.
         </p>
         <hr>
         <p>
@@ -62,7 +78,16 @@
             that generates the plots and the map are available in
             <a href="https://github.com/juliobguedes/covid">my GitHub repository</a>.
             Feel free and encouraged to suggest additions, modifications, open issues and
-            pull requests.
+            pull requests. At the end of the page, a few contact links are available.
+        </p>
+        <p>
+            In the visualization below, some information is not immediately visible. When hovering
+            a country in a specific date, you will see a brief report of the country situation in
+            that date. When you click a country, the charts below the map will be updated to show
+            the data of that country, instead of the world data. Besides that, when clicking in the
+            buttons above the map, you can change the variable that is being displayed as the
+            countries color. In order, the variables are: Number of confirmed cases; Number of
+            deaths; and number of recovered cases.
         </p>
         <p>
             So far, the data is being manually updated every day, using the scripts in the
@@ -123,8 +148,24 @@
             the contents, including information about the disease and infected regions.
         </p>
     </div>
-    <div>
-        &copy; Júlio Guedes
+    <div class="contact-links">
+        <p>&copy; Júlio Guedes</p>
+        <p>
+            <i name="email-icon" class="fa fa-envelope"></i>
+            <label for="email-icon">
+                <a href="mailto:juliobguedes@gmail.com">
+                    juliobguedes@gmail.com
+                </a>
+            </label>
+        </p>
+        <p>
+            <i name="twitter-icon" class="fa fa-twitter"></i>
+            <label for="twitter-icon">
+                <a href="https://twitter.com/juliobguedes">
+                    juliobguedes
+                </a>
+            </label>
+        </p>
     </div>
 </body>
 </html>

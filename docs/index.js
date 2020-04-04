@@ -43,6 +43,11 @@ const ready = (error, data) => {
     const height = +svg.attr('height');
     dimensions = { width, height, margin: 50 };
 
+    tooltipDiv = d3.select('#map-vis')
+        .append('div')
+        .attr('class', 'tooltip')
+        .style('display', 'none')
+
     completeCallbackMap = () => {
         callback = () => plotMap(data);
         createSlider();

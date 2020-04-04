@@ -45,3 +45,5 @@ cp ../data/covid_topo_features.json ../docs/data/covid_topo_features.json
 rm ../data/countries.json ../data/plane_countries.json
 rm ../data/covid_data.ndjson ../data/plane_countries_ortho.ndjson ../data/covid_full.ndjson
 rm ../data/covid_ortho_full.ndjson ../data/covid_topo.json ../data/covid_quantized_topo.json
+
+cp ../data/covid_chart.json ../docs/data/covid_chart.json

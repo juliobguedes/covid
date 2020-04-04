@@ -1,62 +1,79 @@
-const plot_chart = (data) => {
-    checkAndRemoveTag('.chart')
+const plot_chart = (data, chartVar, pos) => {
+    checkAndRemoveTag(`.chart-${chartVar}`);
 
-    svgChart = d3.select('#chart-vis')
-        .append('svg')
-            .attr('class', 'chart')
-            .attr('width', chartDimensions.width)
-            .attr('height', chartDimensions.height)
-        .append('g');
-
-    svgChart.append('g')
+    const plotSvg = svgChart.append('g')
+        .attr('class', `chart-${chartVar}`)
         .attr('transform', `translate(${chartDimensions.left}, ${chartDimensions.top})`);
 
-    const width = chartDimensions.width - chartDimensions.left - chartDimensions.right;
-    const height = chartDimensions.height - chartDimensions.top - chartDimensions.bottom;
+    const widthStart = (pos * chartDimensions.width / 3) + 10;
+    const widthEnd = (pos + 1) * chartDimensions.width / 3 - chartDimensions.right * 2.5;
+    const xAmplitude = widthEnd - widthStart;
+    const height = chartDimensions.height - chartDimensions.top -
+        chartDimensions.bottom - chartDimensions.totalTop;
 
-    const chartData = data[country].data;
+    const chartData = data[country] ? data[country].data : [];
 
-    const maxValue = () => Math.max.apply(Math, chartData.map(d => d[selectedVariable]));
+    const maxValue = () => Math.max.apply(Math, chartData.map(d => d[chartVar]));
 
-    xAxisScale = d3.scaleTime()
-        .domain([startDate, endDate])
-        .range([chartDimensions.left * 2.5, width + chartDimensions.left]);
+    chartAxis[chartVar] = {
+        x: d3.scaleTime()
+            .domain([startDate, endDate])
+            .range([widthStart, widthEnd]),
+        y: d3.scaleLinear()
+            .domain([0, maxValue()])
+            .range([height, chartDimensions.bottom])
+    };
 
-    yAxisScale = d3.scaleLinear()
-        .domain([0, maxValue()])
-        .range([height, 0]);
-
-    svgChart.selectAll('g')
+    plotSvg.selectAll(`.chart-${chartVar}`)
         .data(chartData)
         .enter()
         .append('rect')
-            .attr('x', d => xAxisScale(new Date(d.date)))
-            .attr('y', d => yAxisScale(d[selectedVariable]))
-            .attr('fill', colorMapping[selectedVariable].chartColor)
-            .attr('width', (width / chartData.length) * 0.8)
-            .attr('height', d => height - yAxisScale(d[selectedVariable]));
+            .attr('x', d => chartAxis[chartVar].x(new Date(d.date)))
+            .attr('y', d => chartAxis[chartVar].y(d[chartVar]) - chartDimensions.bottom)
+            .attr('fill', colorMapping[chartVar].chartColor)
+            .attr('width', (xAmplitude / chartData.length) * 0.6)
+            .attr('height', d => height - chartAxis[chartVar].y(d[chartVar]));
 
-    svgChart.append('g')
+    plotSvg.append('g')
         .attr('class', 'x axis')
-        .attr('transform', `translate(0, ${height})`)
-        .call(d3.axisBottom(xAxisScale))
+        .attr('transform', `translate(0, ${height - chartDimensions.bottom})`)
+        .call(d3.axisBottom(chartAxis[chartVar].x))
             .selectAll('text')
+            .attr('transform', 'translate(0, 0) rotate(-45)')
             .style('text-anchor', 'end');
 
-    svgChart.append('g')
-        .attr('transform', `translate(${chartDimensions.left * 2.5}, 0)`)
-        .call(d3.axisLeft(yAxisScale));
+    plotSvg.append('g')
+        .attr('transform', `translate(${widthStart}, ${-chartDimensions.bottom})`)
+        .call(d3.axisLeft(chartAxis[chartVar].y));
 
-    svgChart.append("text")
-        .attr("transform", `translate(${chartDimensions.left}, ${(chartDimensions.height) / 1.66}) rotate(-90)`)
-        .text(legendMapping[selectedVariable]);
-}
+    plotSvg.append("text")
+        .attr("transform", `translate(${widthStart + chartDimensions.left}, 0) rotate(0)`)
+        .text(legendMapping[chartVar]);
+};
 
 
 const chart_ready = (error, data) => {
     if (error) throw error;
 
-    completeCallbackChart = () => plot_chart(data);
+    completeCallbackChart = () => {
+        checkAndRemoveTag('.chart')
+        const chartSvg = d3.select('#chart-vis')
+            .append('svg')
+                .attr('class', 'chart')
+                .attr('width', chartDimensions.width)
+                .attr('height', chartDimensions.height);
+
+        chartSvg.append('text')
+            .attr('transform', `translate(${chartDimensions.width / 2}, 25)`)
+            .text(`Data from ${country}`)
+
+        svgChart = chartSvg.append('g')
+            .attr('transform', `translate(0, ${chartDimensions.totalTop})`);
+
+        plot_chart(data, 'confirmed', 0);
+        plot_chart(data, 'deaths', 1);
+        plot_chart(data, 'recovered', 2);
+    };
     completeCallbackChart();
 }
 

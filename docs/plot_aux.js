@@ -21,6 +21,7 @@ let index = 0;
 let mapScale = 'translate(0, 50)';
 let zooming = false;
 let country = 'World';
+let tooltipDiv;
 
 // Variables related with the slider
 let moving = false;
@@ -33,14 +34,13 @@ let timeScale;
 
 // Chart variables
 const chartDimensions = {
-    width: 1000, height: 600,
+    width: 1050, height: 400, totalTop: 50,
     top: 10, right: 20, bottom: 30, left:45,
 };
-let xAxisScale;
-let yAxisScale;
 let callbackChart;
+const chartAxis = {};
 
-// General Variables
+// General Variables, Mappings and Functions
 
 let selectedVariable = 'confirmed';
 const colorMapping = {
@@ -70,7 +70,7 @@ const radioOnClick = (radio) => {
     index = 0;
     moving = false;
     updateColorScale();
-    completeCallback();
+    completeCallbackMap();
 };
 
 const startDate = new Date(2020, 0, 22);
@@ -122,6 +122,6 @@ const checkAndRemoveTag = (tagname) => {
     if (hasTag !== null) {
         d3.select(tagname).remove();
     }
-}
+};
 
 const endDate = yesterday();

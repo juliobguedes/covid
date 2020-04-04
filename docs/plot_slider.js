@@ -1,7 +1,9 @@
 const createSlider = () => {
+    checkAndRemoveTag('.slider-class');
 
     const sliderdiv = d3.select('#slider')
         .append('svg')
+        .attr('class', 'slider-class')
         .attr('width', dimensions.width)
         .attr('height', '100');
 

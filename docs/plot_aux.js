@@ -7,6 +7,14 @@ let dimensions;
 let intervalId;
 let startButton;
 let callback;
+let colorScale;
+let completeCallbackChart = () => {};
+let completeCallbackMap = () => {};
+
+const completeCallback = () => {
+    completeCallbackMap();
+    completeCallbackChart();
+}
 
 // Variables related with the map
 let index = 0;
@@ -30,8 +38,40 @@ const chartDimensions = {
 };
 let xAxisScale;
 let yAxisScale;
+let callbackChart;
 
 // General Variables
+
+let selectedVariable = 'confirmed';
+const colorMapping = {
+    confirmed: {
+        mapColor: d3.schemeBlues[9],
+        chartColor: '#08519c',
+    },
+    deaths: {
+        mapColor: d3.schemeGreens[9],
+        chartColor: '#006d2c',
+    },
+    recovered: {
+        mapColor: d3.schemeReds[9],
+        chartColor: '#a50f15',
+    },
+};
+
+const legendMapping = {
+    confirmed: 'Total de Casos Confirmados',
+    deaths: 'Total de Óbitos',
+    recovered: 'Total de Recuperações',
+};
+
+const radioOnClick = (radio) => {
+    selectedVariable = radio.value;
+    sliderCurrentValue = dimensions.margin;
+    index = 0;
+    moving = false;
+    updateColorScale();
+    completeCallback();
+};
 
 const startDate = new Date(2020, 0, 22);
 
@@ -41,9 +81,12 @@ const parseDate = d3.timeParse('%m/%d/%y');
 
 const path = d3.geoPath();
 
-const colorScale = d3.scaleThreshold().domain([
-    0, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000
-]).range(d3.schemeBlues[9]);
+const updateColorScale = () => {
+    colorScale = d3.scaleThreshold().domain([
+        0, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000
+    ]).range(colorMapping[selectedVariable].mapColor);
+};
+updateColorScale();
 
 const yesterday = () => {
     const date = new Date();
@@ -73,5 +116,12 @@ const customTransform = (transformObj) => {
     const str = `translate(${x}, ${y + 50}) scale(${k})`;
     return str;
 };
+
+const checkAndRemoveTag = (tagname) => {
+    const hasTag = d3.select(tagname)._groups[0][0] === null;
+    if (hasTag !== null) {
+        d3.select(tagname).remove();
+    }
+}
 
 const endDate = yesterday();

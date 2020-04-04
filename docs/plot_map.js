@@ -1,10 +1,7 @@
 const plotMap = (data) => {
     const countries = data.features;
 
-    const hasCountries = d3.select('.countries')._groups[0][0] === null;
-    if (hasCountries !== null) {
-        d3.select('.countries').remove();
-    }
+    checkAndRemoveTag('.countries');
 
     svg.append('g')
             .attr('class', 'countries')
@@ -14,11 +11,11 @@ const plotMap = (data) => {
         .enter()
         .append('path')
         .attr('fill', (d) => {
-            const confirmed = d.properties.confirmed;
-            if (!confirmed) {
+            const variable = d.properties[selectedVariable];
+            if (!variable) {
                 return '#c0c0c0';
             }
-            const colorValue = confirmed[index];
+            const colorValue = variable[index];
             if (colorValue === 0) {
                 return '#fff';
             }

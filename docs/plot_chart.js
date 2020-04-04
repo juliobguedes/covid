@@ -1,47 +1,63 @@
 const plot_chart = (data) => {
+    checkAndRemoveTag('.chart')
+
+    svgChart = d3.select('#chart-vis')
+        .append('svg')
+            .attr('class', 'chart')
+            .attr('width', chartDimensions.width)
+            .attr('height', chartDimensions.height)
+        .append('g');
+
     svgChart.append('g')
         .attr('transform', `translate(${chartDimensions.left}, ${chartDimensions.top})`);
 
     const width = chartDimensions.width - chartDimensions.left - chartDimensions.right;
     const height = chartDimensions.height - chartDimensions.top - chartDimensions.bottom;
 
-    const chart_data = data[country];
-    xAxisScale = d3.scaleLinear();
+    const chartData = data[country].data;
+
+    const maxValue = () => Math.max.apply(Math, chartData.map(d => d[selectedVariable]));
+
+    xAxisScale = d3.scaleTime()
+        .domain([startDate, endDate])
+        .range([chartDimensions.left * 2.5, width + chartDimensions.left]);
+
+    yAxisScale = d3.scaleLinear()
+        .domain([0, maxValue()])
+        .range([height, 0]);
 
     svgChart.selectAll('g')
-        .data(data)
+        .data(chartData)
         .enter()
-        .append('circle')
-            .attr('cx', d => reposicionaEmX(d.noventa_percentil))
-            .attr('cy', d => reposicionaEmY(d.dez_percentil))
-            .attr('fill', d => preenchimento(d.mediana))
-            .attr('r', 3);
+        .append('rect')
+            .attr('x', d => xAxisScale(new Date(d.date)))
+            .attr('y', d => yAxisScale(d[selectedVariable]))
+            .attr('fill', colorMapping[selectedVariable].chartColor)
+            .attr('width', (width / chartData.length) * 0.8)
+            .attr('height', d => height - yAxisScale(d[selectedVariable]));
 
     svgChart.append('g')
         .attr('class', 'x axis')
         .attr('transform', `translate(0, ${height})`)
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(xAxisScale))
+            .selectAll('text')
+            .style('text-anchor', 'end');
 
     svgChart.append('g')
-        .attr('transform', 'translate(0,0)')
-        .call(d3.axisLeft(y));
+        .attr('transform', `translate(${chartDimensions.left * 2.5}, 0)`)
+        .call(d3.axisLeft(yAxisScale));
 
     svgChart.append("text")
-        .attr("transform", "translate(-30," + (chartHeight + chartDimensions.top)/2 + ") rotate(-90)")
-        .text("10-percentil");
+        .attr("transform", `translate(${chartDimensions.left}, ${(chartDimensions.height) / 1.66}) rotate(-90)`)
+        .text(legendMapping[selectedVariable]);
 }
 
 
 const chart_ready = (error, data) => {
     if (error) throw error;
 
-    svgChart = d3.select('#chart-vis')
-        .append('svg')
-            .attr('width', chartDimensions.width)
-            .attr('height', chartDimensions.height)
-        .append('g');
-
-    plot_chart(data);
+    completeCallbackChart = () => plot_chart(data);
+    completeCallbackChart();
 }
 
 

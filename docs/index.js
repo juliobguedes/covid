@@ -41,11 +41,15 @@ const ready = (error, data) => {
     startButton = d3.select('#start-button');
     const width = +svg.attr('width');
     const height = +svg.attr('height');
-
     dimensions = { width, height, margin: 50 };
-    callback = () => plotMap(data);
-    createSlider();
-    plot_legend();
+
+    completeCallbackMap = () => {
+        callback = () => plotMap(data);
+        createSlider();
+        plot_legend();
+    };
+
+    completeCallbackMap();
 
     startButton.on('click', () => {
         const btnLabel = startButton.text();

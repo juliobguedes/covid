@@ -49,12 +49,16 @@ h1 {
     padding-left: 25px;
 }
 
-#map-vis {
-    flex: 1;
-    justify-content: center;
-    align-items: center;
+.box-shadow {
+    box-shadow: 1px 1px 10px #a0a0a0;
+}
 
-    box-shadow: 5px 5px 10px #a0a0a0;
+#map-vis {
+    margin-bottom: 10px;
+}
+
+#chart-vis {
+    padding: 20px;
 }
 
 svg {
@@ -73,12 +77,22 @@ svg {
     font-size: large;
 }
 
-#early-text {
-
+#radios {
+    padding: 20px 0px 0px 0px;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
 }
 
-#later-text {
-    
+.radio-1 {
+    grid-column: 3;
+}
+
+.radio-2 {
+    grid-column: 4;
+}
+
+.radio-3 {
+    grid-column: 5;
 }
 
 

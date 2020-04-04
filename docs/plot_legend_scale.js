@@ -1,6 +1,9 @@
 const plot_legend = () => {
+    checkAndRemoveTag('.legend-class');
+
     const legendDiv = d3.select('#legend')
         .append('svg')
+        .attr('class', 'legend-class')
         .attr('width', dimensions.width)
         .attr('height', '50');
 
@@ -35,7 +38,7 @@ const plot_legend = () => {
         .attr("fill", "#000")
         .attr("text-anchor", "start")
         .attr("font-weight", "bold")
-        .text('Total de Casos Confirmados');
+        .text(legendMapping[selectedVariable]);
       
     g.call(d3.axisBottom(linearColor)
         .tickSize(13)

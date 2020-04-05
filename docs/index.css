@@ -55,6 +55,7 @@ h1 {
 
 #chart-vis {
     padding: 20px;
+    margin-right: 20px !important;
 }
 
 svg {

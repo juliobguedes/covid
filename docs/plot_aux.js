@@ -1,5 +1,3 @@
-console.log(window.innerHeight, window.innerWidth);
-
 // Global variables that will be accessed in every
 // function. The order of execution assures the
 // proper assignment of each variable.

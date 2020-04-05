@@ -34,13 +34,23 @@ const step = () => {
 const ready = (error, data) => {
     if (error) throw error;
 
-    svg = d3.select('#map').select('svg');
+    const width = 1000;
+    const height = 600;
 
-    svg.call(zoom_handler).on("wheel.zoom", null);
+    svg = d3.select('#map')
+        .append('svg')
+        .attr('id', 'map-svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    svg.call(zoom_handler)
+        .on('wheel.zoom', null)
+        .on('touchstart', null)
+        .on('touchend', null)
+        .on('touchmove', null)
+        .on('touchcancel', null);
     
     startButton = d3.select('#start-button');
-    const width = +svg.attr('width');
-    const height = +svg.attr('height');
     dimensions = { width, height, margin: 50 };
 
     tooltipDiv = d3.select('#map-vis')

@@ -20,7 +20,7 @@ Os tweets estão sendo coletados usando [twint](https://github.com/twint-project
 
 ## Sobre o futuro
 
-Algumas das ideias começaram a ser descritas no [notebook](notebooks/Generating\ -\ Twitter\ Dataset.ipynb) que descrevo a aquisição de dados do twitter.
+Algumas das ideias começaram a ser descritas no [notebook](notebooks/Generating\-\Twitter\Dataset.ipynb) que descrevo a aquisição de dados do twitter.
 
 ## Contribuições
 

@@ -42,13 +42,6 @@ const ready = (error, data) => {
         .attr('id', 'map-svg')
         .attr('width', width)
         .attr('height', height);
-
-    // svg.call(zoom_handler)
-    //     .on('wheel.zoom', null)
-    //     .on('touchstart.zoom', null)
-    //     .on('touchend.zoom', null)
-    //     .on('touchmove.zoom', null)
-    //     .on('touchcancel.zoom', null);
     
     startButton = d3.select('#start-button');
     dimensions = { width, height, margin: 50 };

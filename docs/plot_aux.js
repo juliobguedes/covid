@@ -49,12 +49,12 @@ const colorMapping = {
         chartColor: '#08519c',
     },
     deaths: {
-        mapColor: d3.schemeGreens[9],
-        chartColor: '#006d2c',
-    },
-    recovered: {
         mapColor: d3.schemeReds[9],
         chartColor: '#a50f15',
+    },
+    recovered: {
+        mapColor: d3.schemeGreens[9],
+        chartColor: '#006d2c',
     },
 };
 

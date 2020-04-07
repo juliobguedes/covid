@@ -1,4 +1,6 @@
 const plot_chart = (data, chartVar, pos) => {
+    
+    console.log(data)
     checkAndRemoveTag(`.chart-${chartVar}`);
 
     const plotSvg = svgChart.append('g')
@@ -11,8 +13,7 @@ const plot_chart = (data, chartVar, pos) => {
     const height = chartDimensions.height - chartDimensions.top -
         chartDimensions.bottom - chartDimensions.totalTop;
 
-    const chartData = data[country] ? data[country].data : [];
-
+    const chartData = data.data ? data.data : [];
     const maxValue = () => Math.max.apply(Math, chartData.map(d => d[chartVar]));
 
     chartAxis[chartVar] = {
@@ -54,7 +55,12 @@ const plot_chart = (data, chartVar, pos) => {
 
 const chart_ready = (error, data) => {
     if (error) throw error;
-
+    
+    loadComboboxCountries(data)
+    var countryCombo = document.getElementById("countryCombo");
+    const country = countryCombo.options[countryCombo.selectedIndex].value;
+    console.log(country)
+    
     completeCallbackChart = () => {
         checkAndRemoveTag('.chart')
         const chartSvg = d3.select('#chart-vis')
@@ -70,14 +76,19 @@ const chart_ready = (error, data) => {
         svgChart = chartSvg.append('g')
             .attr('transform', `translate(0, ${chartDimensions.totalTop})`);
 
-        plot_chart(data, 'confirmed', 0);
-        plot_chart(data, 'deaths', 1);
-        plot_chart(data, 'recovered', 2);
+        plot_chart(data[country], 'confirmed', 0);
+        plot_chart(data[country], 'deaths', 1);
+        plot_chart(data[country], 'recovered', 2);
+
+        
     };
     completeCallbackChart();
 }
 
-
-d3.queue()
+const loadChart = () => {
+    d3.queue()
     .defer(d3.json, './data/covid_chart.json')
     .await(chart_ready);
+}
+
+loadChart()

@@ -125,3 +125,21 @@ const checkAndRemoveTag = (tagname) => {
 };
 
 const endDate = yesterday();
+
+const loadComboboxCountries = (data) => {
+    var countryCombo = document.getElementById("countryCombo");
+    var opt = document.createElement("option");
+    opt.value = "World";
+    opt.text = "World";
+    countryCombo.add(opt, countryCombo.options[0]);
+    var count = 1
+    for (const [key, value] of Object.entries(data)) {
+        if (value.country !== "World") {
+            var opt = document.createElement("option");
+            opt.value = value.country;
+            opt.text = value.country;
+            countryCombo.add(opt, countryCombo.options[count]);
+            count = count + 1
+        }
+      }
+}

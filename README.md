@@ -16,11 +16,11 @@ A ideia principal é criar um dashboard interativo e timelapsed sobre como a COV
 
 Os dados sobre o COVID-19 foram e estão sendo coletados no site da Universidade Johns Hopkins, que você pode acessar [nesse link](https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases).
 
-Os tweets estão sendo coletados usando [twint](https://github.com/twint-project/twint).
+Os tweets estão sendo coletados usando [twint](https://github.com/twintproject/twint).
 
 ## Sobre o futuro
 
-Algumas das ideias começaram a ser descritas no [notebook](notebooks/Generating\ -\ Twitter\ Dataset.ipynb) que descrevo a aquisição de dados do twitter.
+Algumas das ideias começaram a ser descritas no [notebook](notebooks/Generating\-\Twitter\Dataset.ipynb) que descrevo a aquisição de dados do twitter.
 
 ## Contribuições
 

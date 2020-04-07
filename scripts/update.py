@@ -96,7 +96,7 @@ for country in countries:
             'date': row['Date'],
             'confirmed': row['Confirmed'],
             'deaths': row['Deaths'],
-            'recovered': row['Deaths']
+            'recovered': row['Recovered']
         })
         
         if row['Date'] in daily_data:

@@ -24,4 +24,6 @@ Algumas das ideias começaram a ser descritas no [notebook](notebooks/Generating
 
 ## Contribuições
 
+Por favor, confira o nosso [CONTRIBUTING](CONTRIBUTING.md).
+
 Tem alguma ideia? Sinta-se livre para abrir issues, pull requests, ou entrar em contato.

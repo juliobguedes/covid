@@ -22,6 +22,8 @@ let mapScale = 'translate(0, 50)';
 let zooming = false;
 let country = 'World';
 let tooltipDiv;
+let lastClick = 0;
+let clickTimeout;
 
 // Variables related with the slider
 let moving = false;

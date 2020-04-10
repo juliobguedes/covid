@@ -24,8 +24,17 @@ const plotMap = (data) => {
         })
         .attr('d', path)
         .on('click', (d) => {
-            country = d.properties.COUNTRY;
-            completeCallbackChart();
+            const currentClick = new Date().getTime();
+            if (currentClick - lastClick <= 200) {
+                clearTimeout(clickTimeout);
+                console.log('double click');
+            } else {
+                clickTimeout = setTimeout(() => {
+                    country = d.properties.COUNTRY;
+                    completeCallbackChart();
+                }, 250);
+            }
+            lastClick = new Date().getTime();
         })
         .on('mouseover', mouseOver)
         .on('mouseout', mouseOut)

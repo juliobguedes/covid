@@ -8,7 +8,9 @@ import numpy as np
 import pandas as pd
 import subprocess, sys, os, json
 
-print('Running data transformation: Map')
+# ======================================================================== #
+
+print('Running data transformation: World Map')
 
 datapath = '../data'
 ts_n_deaths = pd.read_csv(f'{datapath}/time_series_covid19_deaths_global_narrow.csv')
@@ -82,7 +84,10 @@ for country in countries:
 with open(f'{datapath}/covid_updated.json', 'w') as json_path:
     json.dump(covid_jsons, json_path)
     
-print('Running data transformation: Charts')
+    
+# ======================================================================== #
+    
+print('Running data transformation: Countries Charts')
 
 chart_json = {}
 daily_data = {}
@@ -128,6 +133,60 @@ world_obj = {
 }
 
 chart_json['World'] = world_obj
+
+# ======================================================================== #
+
+print('Running data transformation: Brasil Map')
+
+brasil_df = pd.read_csv(f'{datapath}/brasil.csv', sep=';', encoding='utf-8')
+brasil_df.columns = ['região'] + brasil_df.columns.tolist()[1:]
+
+estados = pd.read_csv(f'{datapath}/estados.csv')
+estados.loc[0]['COD'], estados.loc[0]['NOME'], estados.loc[0]['SIGLA']
+
+def remove_padding(row):
+    row['SIGLA'] = row['SIGLA'][1:]
+    return row
+
+estados = estados.apply(remove_padding, axis=1)
+estados = estados.set_index('SIGLA')
+
+def completa_info(row, estados_df):
+    estado = estados_df.loc[row['sigla']]
+    row['estado'] = estado['NOME']
+    row['cod_estado'] = estado['COD']
+    row['date'] = '-'.join(row['date'].split('/')[::-1])
+    return row
+
+brasil_df = brasil_df.apply(completa_info, estados_df=estados, axis=1)
+
+states = brasil_df['estado'].unique()
+days_before = [0] * 8
+dates_before = ['2020-01-{}'.format(n) for n in range(22, 30)]
+
+
+# ======================================================================== #
+
+print('Running data transformation: Brasil Charts')
+
+for state in states:
+    segment = brasil_df[brasil_df['estado'] == state].copy().reset_index()
+
+    daily = []
+    for index, row in segment.iterrows():
+        daily.append({
+            'date': row['date'],
+            'confirmed': row['cases'],
+            'deaths': row['deaths'],
+            'recovered': 0
+        })
+    
+    chart_json[state] = {
+        'country': state,
+        'data': daily
+    }
+
+# ======================================================================== #
 
 with open(f'{datapath}/covid_chart.json', 'w') as covid_chart:
     json.dump(chart_json, covid_chart)

@@ -38,6 +38,20 @@ grouped = grouped_deaths.merge(grouped_recov, left_index=True, right_index=True)
 grouped = grouped.merge(grouped_conf, left_index=True, right_index=True)
 grouped.reset_index(drop=False, inplace=True)
 
+def new_cols(row):
+    if (row.name > 0 and row['Country/Region'] == grouped.loc[row.name - 1]['Country/Region']):
+        row['newConfirmed'] = 0
+        row['newDeaths'] = 0
+        row['newRecovered'] = 0
+    else:
+        row['newConfirmed'] = 0
+        row['newDeaths'] = 0
+        row['newRecovered'] = 0
+        
+    return row
+    
+grouped = grouped.apply(new_cols, axis=1)
+
 countries = grouped['Country/Region'].unique()
 
 mapping = {
@@ -77,7 +91,10 @@ for country in countries:
         'dates': ts_segment['Date'].tolist(),
         'confirmed': ts_segment['Confirmed'].tolist(),
         'deaths': ts_segment['Deaths'].tolist(),
-        'recovered': ts_segment['Recovered'].tolist()
+        'recovered': ts_segment['Recovered'].tolist(),
+        'newConfirmed': ts_segment['newConfirmed'].tolist(),
+        'newDeaths': ts_segment['newDeaths'].tolist(),
+        'newRecovered': ts_segment['newRecovered'].tolist()
     }
     covid_jsons.append(covid_json)
 
@@ -101,18 +118,28 @@ for country in countries:
             'date': row['Date'],
             'confirmed': row['Confirmed'],
             'deaths': row['Deaths'],
-            'recovered': row['Recovered']
+            'recovered': row['Recovered'],
+            'newConfirmed': row['newConfirmed'],
+            'newDeaths': row['newDeaths'],
+            'newRecovered': row['newRecovered']
         })
         
         if row['Date'] in daily_data:
             daily_data[row['Date']]['confirmed'] += row['Confirmed']
             daily_data[row['Date']]['deaths'] += row['Deaths']
             daily_data[row['Date']]['recovered'] += row['Recovered']
+            daily_data[row['Date']]['newConfirmed'] += row['newConfirmed']
+            daily_data[row['Date']]['newDeaths'] += row['newDeaths']
+            daily_data[row['Date']]['newRecovered'] += row['newRecovered']
+            
         else:
             daily_data[row['Date']] = {
                 'confirmed': row['Confirmed'],
                 'deaths': row['Deaths'],
-                'recovered': row['Recovered']
+                'recovered': row['Recovered'],
+                'newConfirmed': row['newConfirmed'],
+                'newDeaths': row['newDeaths'],
+                'newRecovered': row['newRecovered']
             }
     
     country_name = mapping[country] if country in mapping else country

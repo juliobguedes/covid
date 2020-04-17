@@ -25,12 +25,16 @@ const plotMap = (data) => {
         .attr('d', path)
         .on('click', (d) => {
             const currentClick = new Date().getTime();
+            const c = d.properties.COUNTRY;
             if (currentClick - lastClick <= 200) {
                 clearTimeout(clickTimeout);
-                console.log('double click');
+                if (c in mapsData) {
+                    countryName = c;
+                    completeCallbackMap();
+                }
             } else {
                 clickTimeout = setTimeout(() => {
-                    country = d.properties.COUNTRY;
+                    varChart = c ? c : d.properties.estado;
                     completeCallbackChart();
                 }, 250);
             }
@@ -52,13 +56,7 @@ const mouseOut = (d) => {
 };
 
 const mouseMove = (d) => {
-    const singleCase = !d.properties.country ? null : d.properties.confirmed[index] === 1;
-    const text = !d.properties.country
-        ? `Country: ${d.properties.COUNTRY}. No data was provided.`
-        : `Country: ${d.properties.COUNTRY}. In ${d.properties.dates[index]},
-        this country had reported ${d.properties.confirmed[index]} confirmed case${singleCase ? '' : 's'},
-        ${d.properties.deaths[index]} cases of death, and ${d.properties.recovered[index]}
-        cases of recovery`;
+    const text = formulateText(d);
     tooltipDiv.text(text)
         .style("left", `${d3.event.pageX + dimensions.margin / 3}px`)
         .style("top", `${d3.event.pageY - 12}px`);

@@ -37,11 +37,15 @@ const ready = (error, data) => {
     const width = 1000;
     const height = 600;
 
+    mapsData = data;
+
     svg = d3.select('#map')
         .append('svg')
         .attr('id', 'map-svg')
         .attr('width', width)
         .attr('height', height);
+
+    // svg.call(zoom_handler);
     
     startButton = d3.select('#start-button');
     dimensions = { width, height, margin: 50 };
@@ -52,7 +56,10 @@ const ready = (error, data) => {
         .style('display', 'none')
 
     completeCallbackMap = () => {
-        callback = () => plotMap(data);
+        callback = () => plotMap(data[countryName]);
+        limit = countryName === 'World' ? 10000 : 2000;
+        mapScale = countryName === 'World'? mapScale : 'translate(0, 0)';
+        updateColorScale();
         createSlider();
         plot_legend();
     };
@@ -70,5 +77,5 @@ const ready = (error, data) => {
 }
 
 d3.queue()
-    .defer(d3.json, './data/covid_topo_features.json')
+    .defer(d3.json, './data/topo_features.json')
     .await(ready);

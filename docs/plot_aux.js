@@ -8,6 +8,7 @@ let intervalId;
 let startButton;
 let callback;
 let colorScale;
+let limit = 10000;
 let completeCallbackChart = () => {};
 let completeCallbackMap = () => {};
 
@@ -17,10 +18,12 @@ const completeCallback = () => {
 }
 
 // Variables related with the map
+let mapsData;
+let countryName = 'World';
 let index = 0;
 let mapScale = 'translate(0, 50)';
 let zooming = false;
-let country = 'World';
+let varChart = 'World';
 let tooltipDiv;
 let lastClick = 0;
 let clickTimeout;
@@ -85,7 +88,9 @@ const path = d3.geoPath();
 
 const updateColorScale = () => {
     colorScale = d3.scaleThreshold().domain([
-        0, 1250, 2500, 3750, 5000, 6250, 7500, 8750, 10000
+        0, limit/8, limit/4, (3 * limit) / 8, limit/2,
+        (5 * limit) / 8, (3 * limit) / 4, (7 * limit) / 8,
+        limit
     ]).range(colorMapping[selectedVariable].mapColor);
 };
 updateColorScale();
@@ -112,6 +117,25 @@ const getDateIndex = (date) => {
     const diff = Math.round(Math.abs((date - firstDay) / lengthOfDay));
     return diff;
 };
+
+const formulateText = (d) => {
+    const singleCase = !d.properties.country ? null : d.properties.confirmed[index] === 1;
+    let text;
+    if (d.properties.country) {
+        text = `Country: ${d.properties.COUNTRY}. In ${d.properties.dates[index]},
+        this country had reported ${d.properties.confirmed[index]} confirmed case${singleCase ? '' : 's'},
+        ${d.properties.deaths[index]} cases of death, and ${d.properties.recovered[index]}
+        cases of recovery`;
+    } else if (d.properties.estado) {
+        text = `State: ${d.properties.estado}. In ${d.properties.dates[index]},
+        this state had reported ${d.properties.confirmed[index]} confirmed case${singleCase ? '' : 's'},
+        ${d.properties.deaths[index]} cases of death, and ${d.properties.recovered[index]}
+        cases of recovery`;
+    } else {
+        text = `Country: ${d.properties.COUNTRY}. No data was provided.`;
+    }
+    return text;
+}
 
 const customTransform = (transformObj) => {
     const { x, y, k } = transformObj;

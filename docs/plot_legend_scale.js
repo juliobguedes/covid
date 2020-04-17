@@ -8,7 +8,7 @@ const plot_legend = () => {
         .attr('height', '50');
 
     const linearColor = d3.scaleLinear()
-        .domain([0, 10000])
+        .domain([0, limit])
         .rangeRound([600, 850]);
 
     const g = legendDiv.append('g')

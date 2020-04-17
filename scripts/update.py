@@ -98,8 +98,8 @@ for country in countries:
     }
     covid_jsons.append(covid_json)
 
-with open(f'{datapath}/covid_updated.json', 'w') as json_path:
-    json.dump(covid_jsons, json_path)
+with open(f'{datapath}/covid_updated.json', 'w', encoding='utf-8') as json_path:
+    json.dump(covid_jsons, json_path, ensure_ascii=False)
     
     
 # ======================================================================== #
@@ -169,7 +169,6 @@ brasil_df = pd.read_csv(f'{datapath}/brasil.csv', sep=';', encoding='utf-8')
 brasil_df.columns = ['região'] + brasil_df.columns.tolist()[1:]
 
 estados = pd.read_csv(f'{datapath}/estados.csv')
-estados.loc[0]['COD'], estados.loc[0]['NOME'], estados.loc[0]['SIGLA']
 
 def remove_padding(row):
     row['SIGLA'] = row['SIGLA'][1:]
@@ -179,33 +178,56 @@ estados = estados.apply(remove_padding, axis=1)
 estados = estados.set_index('SIGLA')
 
 def completa_info(row, estados_df):
-    estado = estados_df.loc[row['sigla']]
-    row['estado'] = estado['NOME']
+    estado = estados_df.loc[row['estado']]
+    row['estado_nome'] = estado['NOME']
     row['cod_estado'] = estado['COD']
-    row['date'] = '-'.join(row['date'].split('/')[::-1])
+    row['data'] = '-'.join(row['data'].split('/')[::-1])
     return row
 
 brasil_df = brasil_df.apply(completa_info, estados_df=estados, axis=1)
 
-states = brasil_df['estado'].unique()
+states = brasil_df['estado_nome'].unique()
 days_before = [0] * 8
 dates_before = ['2020-01-{}'.format(n) for n in range(22, 30)]
 
+
+covid_jsons = []
+for state in states:
+    ts_segment = brasil_df[brasil_df['estado_nome'] == state].copy().reset_index(drop=True)
+    
+    covid_json = {
+        'estado': state,
+        'cod_estado': int(ts_segment.loc[0]['cod_estado']),
+        'dates': dates_before + ts_segment['data'].tolist(),
+        'confirmed': days_before + ts_segment['casosAcumulados'].tolist(),
+        'deaths': days_before + ts_segment['obitosAcumulados'].tolist(),
+        'recovered': [0] * (8 + len(ts_segment)),
+        'newConfirmed': days_before + ts_segment['casosNovos'].tolist(),
+        'newDeaths': days_before + ts_segment['obitosNovos'].tolist(),
+        'newRecovered': [0] * (8 + len(ts_segment))
+    }
+    covid_jsons.append(covid_json)
+
+with open(f'{datapath}/brasil_covid.json', 'w', encoding='utf-8') as json_path:
+    json.dump(covid_jsons, json_path, ensure_ascii=False)
 
 # ======================================================================== #
 
 print('Running data transformation: Brasil Charts')
 
 for state in states:
-    segment = brasil_df[brasil_df['estado'] == state].copy().reset_index()
+    segment = brasil_df[brasil_df['estado_nome'] == state].copy().reset_index()
 
     daily = []
     for index, row in segment.iterrows():
         daily.append({
-            'date': row['date'],
-            'confirmed': row['cases'],
-            'deaths': row['deaths'],
-            'recovered': 0
+            'date': row['data'],
+            'confirmed': row['casosAcumulados'],
+            'deaths': row['obitosAcumulados'],
+            'recovered': 0,
+            'newConfirmed': row['casosNovos'],
+            'newDeaths': row['obitosNovos'],
+            'newRecovered': 0
         })
     
     chart_json[state] = {
@@ -220,3 +242,22 @@ with open(f'{datapath}/covid_chart.json', 'w') as covid_chart:
 
 print('Running map generation')
 subprocess.call('./update.sh', shell=True)
+
+# ======================================================================== #
+
+with open(f'{datapath}/covid_topo_features.json', 'r') as topo:
+    topo_json = json.load(topo)
+
+with open(f'{datapath}/brasil_topo_features.json', 'r') as br_topo:
+    br_topo_json = json.load(br_topo)
+
+covid_topo_json = {
+    'Brazil': br_topo_json,
+    'World': topo_json
+}
+
+with open(f'{datapath}/topo_features.json', 'w') as topo_features:
+    json.dump(covid_topo_json, topo_features)
+
+print('Removing intermediary files and moving final files')
+subprocess.call('./copy_and_remove.sh', shell=True)

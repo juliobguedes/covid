@@ -40,15 +40,7 @@ npx topo2geo tracts=- \
     < ../data/covid_quantized_topo.json \
     > ../data/covid_topo_features.json
 
-cp ../data/covid_topo_features.json ../docs/data/covid_topo_features.json
-
-rm ../data/countries.json ../data/plane_countries.json ../data/covid_topo_features.json
-rm ../data/covid_data.ndjson ../data/plane_countries_ortho.ndjson ../data/covid_full.ndjson
-rm ../data/covid_ortho_full.ndjson ../data/covid_topo.json ../data/covid_quantized_topo.json
-
-
 # ================================ #
-
 
 npx shp2json ../data/brasil_shp/UFEBRASIL.shp -o ../data/brasil_shp.json
 
@@ -96,12 +88,3 @@ npx toposimplify -p 1 -f \
 npx topo2geo tracts=- \
     < ../data/brasil_quantized_topo.json \
     > ../data/brasil_topo_features.json
-
-cp ../data/brasil_topo_features.json ../docs/data/brasil_topo_features.json
-
-rm ../data/brasil_shp.json ../data/plane_brasil.json ../data/plane_brasil.ndjson
-rm ../data/brasil_covid.ndjson ../data/plane_brasil_ortho.ndjson ../data/brasil_full.ndjson
-rm ../data/brasil_ortho_full.ndjson ../data/brasil_topo.json ../data/brasil_quantized_topo.json
-rm ../data/brasil_topo_features.json
-
-cp ../data/covid_chart.json ../docs/data/covid_chart.json

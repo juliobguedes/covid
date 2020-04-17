@@ -11,7 +11,7 @@ const plot_chart = (data, chartVar, pos) => {
     const height = chartDimensions.height - chartDimensions.top -
         chartDimensions.bottom - chartDimensions.totalTop;
 
-    const chartData = data[country] ? data[country].data : [];
+    const chartData = data[varChart] ? data[varChart].data : [];
 
     const maxValue = () => Math.max.apply(Math, chartData.map(d => d[chartVar]));
 
@@ -65,7 +65,7 @@ const chart_ready = (error, data) => {
 
         chartSvg.append('text')
             .attr('transform', `translate(${chartDimensions.width / 2}, 25)`)
-            .text(`Data from ${country}`)
+            .text(`Data from ${varChart}`)
 
         svgChart = chartSvg.append('g')
             .attr('transform', `translate(0, ${chartDimensions.totalTop})`);

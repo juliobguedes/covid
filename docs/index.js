@@ -43,7 +43,8 @@ const ready = (error, data) => {
         .append('svg')
         .attr('id', 'map-svg')
         .attr('width', width)
-        .attr('height', height);
+        .attr('height', height)
+        .on('click', () => console.log('g'));
 
     // svg.call(zoom_handler);
     

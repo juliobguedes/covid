@@ -1,6 +1,8 @@
 const plotMap = (data) => {
     const countries = data.features;
 
+    console.log(data);
+
     checkAndRemoveTag('.countries');
 
     svg.append('g')
@@ -14,6 +16,7 @@ const plotMap = (data) => {
         .attr('fill', (d) => {
             const variable = d.properties[selectedVariable];
             if (!variable) {
+                console.log(d.properties.name);
                 return '#c0c0c0';
             }
             const colorValue = variable[index];

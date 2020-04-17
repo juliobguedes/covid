@@ -235,6 +235,69 @@ for state in states:
         'data': daily
     }
 
+
+# ======================================================================== #
+
+print('Running data transformation: Other Countries')
+
+states_deaths = ts_n_deaths.groupby(['Country/Region', 'Province/State', 'Date']).agg({ 'Value': 'sum' })
+states_recov = ts_n_recov.groupby(['Country/Region', 'Province/State', 'Date']).agg({ 'Value': 'sum' })
+states_conf = ts_n_conf.groupby(['Country/Region', 'Province/State', 'Date']).agg({ 'Value': 'sum' })
+
+states_deaths.columns = ['Deaths']
+states_recov.columns = ['Recovered']
+states_conf.columns = ['Confirmed']
+
+grouped_states = states_deaths.merge(states_recov, left_index=True, right_index=True)
+grouped_states = grouped_states.merge(states_conf, left_index=True, right_index=True)
+grouped_states.reset_index(drop=False, inplace=True)
+
+grouped_states = grouped_states.apply(new_cols, axis=1)
+
+countries = grouped_states['Country/Region'].unique()
+
+for country in countries:
+    subset = grouped_states[grouped_states['Country/Region'] == country].copy().reset_index(drop=True)
+    
+    covid_jsons = []
+    states = subset['Province/State'].unique()
+    
+    for state in states:
+        subsubset = subset[subset['Province/State'] == state].copy().reset_index(drop=True)
+        subsubset.sort_values(['Date'], inplace=True)
+        
+        covid_json = {
+            'state': state,
+            'dates': subsubset['Date'].tolist(),
+            'confirmed': subsubset['Confirmed'].tolist(),
+            'deaths': subsubset['Deaths'].tolist(),
+            'recovered': subsubset['Recovered'].tolist(),
+            'newConfirmed': subsubset['newConfirmed'].tolist(),
+            'newDeaths': subsubset['newDeaths'].tolist(),
+            'newRecovered': subsubset['newRecovered'].tolist()
+        }
+        covid_jsons.append(covid_json)
+        
+        daily = []
+        for index, row in subsubset.iterrows():
+            daily.append({
+                'date': row['Date'],
+                'confirmed': row['Confirmed'],
+                'deaths': row['Deaths'],
+                'recovered': row['Recovered'],
+                'newConfirmed': row['newConfirmed'],
+                'newDeaths': row['newDeaths'],
+                'newRecovered': row['newRecovered']
+            })
+            
+        chart_json[state] = {
+            'country': state,
+            'data': daily
+        }
+        
+    with open(f'{datapath}/{country}.json', 'w') as country_json:
+        json.dump(covid_jsons, country_json)
+
 # ======================================================================== #
 
 with open(f'{datapath}/covid_chart.json', 'w') as covid_chart:

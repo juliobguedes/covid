@@ -1,8 +1,6 @@
 const plotMap = (data) => {
     const countries = data.features;
 
-    console.log(data);
-
     checkAndRemoveTag('.countries');
 
     svg.append('g')
@@ -37,7 +35,7 @@ const plotMap = (data) => {
                 }
             } else {
                 clickTimeout = setTimeout(() => {
-                    varChart = c ? c : d.properties.estado;
+                    varChart = c ? c : d.properties.state;
                     completeCallbackChart();
                 }, 250);
             }

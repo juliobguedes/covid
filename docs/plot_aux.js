@@ -126,8 +126,8 @@ const formulateText = (d) => {
         this country had reported ${d.properties.confirmed[index]} confirmed case${singleCase ? '' : 's'},
         ${d.properties.deaths[index]} cases of death, and ${d.properties.recovered[index]}
         cases of recovery`;
-    } else if (d.properties.estado) {
-        text = `State: ${d.properties.estado}. In ${d.properties.dates[index]},
+    } else if (d.properties.state) {
+        text = `State: ${d.properties.state}. In ${d.properties.dates[index]},
         this state had reported ${d.properties.confirmed[index]} confirmed case${singleCase ? '' : 's'},
         ${d.properties.deaths[index]} cases of death, and ${d.properties.recovered[index]}
         cases of recovery`;

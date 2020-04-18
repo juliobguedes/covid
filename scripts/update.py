@@ -100,10 +100,10 @@ for country in countries:
 
 with open(f'{datapath}/covid_updated.json', 'w', encoding='utf-8') as json_path:
     json.dump(covid_jsons, json_path, ensure_ascii=False)
-    
-    
+
+
 # ======================================================================== #
-    
+
 print('Running data transformation: Countries Charts')
 
 chart_json = {}
@@ -196,7 +196,7 @@ for state in states:
     ts_segment = brasil_df[brasil_df['estado_nome'] == state].copy().reset_index(drop=True)
     
     covid_json = {
-        'estado': state,
+        'state': state,
         'cod_estado': int(ts_segment.loc[0]['cod_estado']),
         'dates': dates_before + ts_segment['data'].tolist(),
         'confirmed': days_before + ts_segment['casosAcumulados'].tolist(),
@@ -248,10 +248,11 @@ states_deaths.columns = ['Deaths']
 states_recov.columns = ['Recovered']
 states_conf.columns = ['Confirmed']
 
-grouped_states = states_deaths.merge(states_recov, left_index=True, right_index=True)
-grouped_states = grouped_states.merge(states_conf, left_index=True, right_index=True)
+grouped_states = states_deaths.merge(states_recov, how='left', left_index=True, right_index=True)
+grouped_states = grouped_states.merge(states_conf, how='left', left_index=True, right_index=True)
 grouped_states.reset_index(drop=False, inplace=True)
 
+grouped_states = grouped_states.fillna(0)
 grouped_states = grouped_states.apply(new_cols, axis=1)
 
 countries = grouped_states['Country/Region'].unique()
@@ -314,7 +315,13 @@ with open(f'{datapath}/covid_topo_features.json', 'r') as topo:
 with open(f'{datapath}/brasil_topo_features.json', 'r') as br_topo:
     br_topo_json = json.load(br_topo)
 
+with open(f'{datapath}/australia_topo_features.json', 'r') as aus_topo:
+    aus_topo_json = json.load(aus_topo)
+
+aus_topo_json['features'] = [f for f in aus_topo_json['features'] if 'state' in f['properties']]
+
 covid_topo_json = {
+    'Australia': aus_topo_json,
     'Brazil': br_topo_json,
     'World': topo_json
 }

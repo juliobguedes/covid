@@ -45,11 +45,6 @@ npx topo2geo tracts=- \
 npx shp2json ../data/brasil_shp/UFEBRASIL.shp -o ../data/brasil_shp.json
 
 npx geoproject \
-    'd3.geoOrthographic().fitSize([1000, 600], d)' \
-    < ../data/brasil_shp.json \
-    > ../data/plane_brasil.json
-
-npx geoproject \
     'd3.geoOrthographic().rotate([52, 14, 0]).fitSize([1000, 600], d)' \
     < ../data/brasil_shp.json \
     > ../data/plane_brasil.json
@@ -72,7 +67,7 @@ npx ndjson-join --left 'd.cod_estado' \
     > ../data/brasil_full.ndjson
 
 npx ndjson-map \
-  'd[0].properties = Object.assign({}, d[0].properties, d[1]), d[0]' \
+  'd[0].properties = Object.assign({}, d[1]), d[0]' \
   < ../data/brasil_full.ndjson \
   > ../data/brasil_ortho_full.ndjson
 
@@ -88,3 +83,49 @@ npx toposimplify -p 1 -f \
 npx topo2geo tracts=- \
     < ../data/brasil_quantized_topo.json \
     > ../data/brasil_topo_features.json
+
+
+# ================================ #
+
+
+npx shp2json ../data/australia_shp/Australia_Polygon.shp -o ../data/australia_shp.json
+
+npx geoproject \
+    'd3.geoOrthographic().rotate([-134, 25, 0]).fitSize([1000, 600], d)' \
+    < ../data/australia_shp.json \
+    > ../data/plane_australia.json
+
+npx ndjson-split 'd.features' \
+    < ../data/plane_australia.json \
+    > ../data/plane_australia.ndjson
+
+npx ndjson-split 'd' \
+    < ../data/Australia.json \
+    > ../data/australia_covid.ndjson
+
+npx ndjson-map 'd.state = d.properties.name, d' \
+    < ../data/plane_australia.ndjson \
+    > ../data/plane_australia_ortho.ndjson
+
+npx ndjson-join --left 'd.state' \
+    ../data/plane_australia_ortho.ndjson \
+    ../data/australia_covid.ndjson \
+    > ../data/australia_full.ndjson
+
+npx ndjson-map \
+    'd[0].properties = Object.assign({}, d[1]), d[0]' \
+    < ../data/australia_full.ndjson \
+    > ../data/australia_ortho_full.ndjson
+
+npx geo2topo -n \
+    tracts=../data/australia_ortho_full.ndjson \
+    > ../data/australia_topo.json
+
+npx toposimplify -p 1 -f \
+    < ../data/australia_topo.json \
+    | npx topoquantize 1e5 \
+    > ../data/australia_quantized_topo.json
+
+npx topo2geo tracts=- \
+    < ../data/australia_quantized_topo.json \
+    > ../data/australia_topo_features.json

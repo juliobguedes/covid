@@ -47,7 +47,7 @@ const plot_chart = (data, chartVar, pos) => {
         .call(d3.axisLeft(chartAxis[chartVar].y));
 
     plotSvg.append("text")
-        .attr("transform", `translate(${widthStart + chartDimensions.left}, 0) rotate(0)`)
+        .attr("transform", `translate(${widthStart + chartDimensions.left}, -10) rotate(0)`)
         .text(legendMapping[chartVar]);
 };
 
@@ -56,6 +56,7 @@ const chart_ready = (error, data) => {
     if (error) throw error;
 
     completeCallbackChart = () => {
+        updateMarkers(data);
         checkAndRemoveTag('.chart')
         const chartSvg = d3.select('#chart-vis')
             .append('svg')

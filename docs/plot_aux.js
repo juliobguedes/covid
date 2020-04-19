@@ -65,7 +65,12 @@ const legendMapping = {
 };
 
 const radioOnClick = (radio) => {
-    selectedVariable = radio.value;
+    for (let item of radio.parentNode.children) {
+        item.classList.remove('active');
+    }
+    radio.classList.add('active');
+    
+    selectedVariable = radio.getAttribute('name');
     sliderCurrentValue = dimensions.margin;
     index = 0;
     moving = false;
@@ -123,5 +128,34 @@ const checkAndRemoveTag = (tagname) => {
         d3.select(tagname).remove();
     }
 };
+
+const createMarker = (divId, textValue) => {
+    checkAndRemoveTag(`.${divId}`);
+
+    d3.select(`#${divId}`)
+        .append('svg')
+            .attr('class', `${divId}`)
+            .attr('width', '100%')
+            .attr('height', '30px')
+        .append('text')
+            .attr('class', 'marker')
+            .attr('text-anchor', 'start')
+            .text(`${textValue}`)
+            .attr('font-size', '28px')
+            .attr('font-family', 'CircularStd')
+            .attr('transform', `translate(0, 25)`);
+}
+
+const updateMarkers = (chartData) => {
+    const lastIndex = chartData[country] ? chartData[country].data.length -1 : undefined;
+    const lastChart = lastIndex ? chartData[country].data[lastIndex] : undefined;
+    const confirmed = lastChart ? lastChart.confirmed : '-';
+    const deaths = lastChart ? lastChart.deaths : '-';
+    const recovered = lastChart ? lastChart.recovered : '-';
+
+    createMarker('confirmed-number', confirmed);
+    createMarker('deaths-number', deaths);
+    createMarker('recovered-number', recovered);
+}
 
 const endDate = yesterday();

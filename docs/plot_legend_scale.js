@@ -5,7 +5,9 @@ const plot_legend = () => {
         .append('svg')
         .attr('class', 'legend-class')
         .attr('width', dimensions.width)
-        .attr('height', '50');
+        .attr('height', '75');
+
+    plot_buttons(legendDiv);
 
     const linearColor = d3.scaleLinear()
         .domain([0, 10000])

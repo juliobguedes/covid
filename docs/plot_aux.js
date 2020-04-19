@@ -25,12 +25,11 @@ let tooltipDiv;
 
 // Variables related with the slider
 let moving = false;
-let sliderCurrentValue;
-let sliderTargetValue;
-let slider;
-let handle;
-let label;
 let timeScale;
+let updateLabelDate;
+
+// Buttons variables
+let playPauseIcon;
 
 // Chart variables
 const chartDimensions = {
@@ -69,10 +68,9 @@ const radioOnClick = (radio) => {
         item.classList.remove('active');
     }
     radio.classList.add('active');
-    
     selectedVariable = radio.getAttribute('name');
-    sliderCurrentValue = dimensions.margin;
-    index = 0;
+    
+    // index = 0;
     moving = false;
     updateColorScale();
     completeCallbackMap();
@@ -126,6 +124,14 @@ const checkAndRemoveTag = (tagname) => {
     const hasTag = d3.select(tagname)._groups[0][0] === null;
     if (hasTag !== null) {
         d3.select(tagname).remove();
+    }
+};
+
+const update = (value, ignore=false) => {
+    const oldIndex = index;
+    index = getDateIndex(value);
+    if (oldIndex !== index || ignore) {
+        callback();
     }
 };
 

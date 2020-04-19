@@ -1,32 +1,23 @@
 
 const startBtn = () => {
+    playPauseIcon.text(() => '\uf04c')
+        .attr('transform', 'translate(100, 44)');
     moving = true;
-    if (sliderCurrentValue >= dimensions.width - dimensions.margin) {
-        // this resets the slider if it has reached the end before
-        index = -1;
-        sliderCurrentValue = 50;
-    }
-    intervalId = setInterval(step, 1000);
-    startButton.text('Pause');
+    intervalId = setInterval(step, 500);
 }
 
 const stopBtn = () => {
+    playPauseIcon.text(() => '\uf04b')
+        .attr('transform', 'translate(102, 44)');
     moving = false;
     clearInterval(intervalId);
-    startButton.text('Start');
 }
 
 const step = () => {
-    if (zooming) {
-        zooming = false;
-        return;
-    }
-
-    const nextDay = tomorrow()
-    sliderCurrentValue = timeScale(nextDay);
+    const nextDay = tomorrow();
+    if (nextDay > endDate) return;
     update(nextDay);
-
-    if (sliderCurrentValue >= (dimensions.width - dimensions.margin)) {
+    if (index === getDateIndex(endDate)) {
         stopBtn();
     }
 };
@@ -52,21 +43,20 @@ const ready = (error, data) => {
         .style('display', 'none')
 
     completeCallbackMap = () => {
-        callback = () => plotMap(data);
-        createSlider();
+        timeScale = d3.scaleTime()
+            .domain([startDate, endDate])
+            .range([0, getDateIndex(endDate)])
+            .clamp(true);
+
+        callback = () => {
+            plotMap(data);
+            updateLabelDate();
+        };
         plot_legend();
+        update(timeScale.invert(index), ignore=true);
     };
 
     completeCallbackMap();
-
-    startButton.on('click', () => {
-        const btnLabel = startButton.text();
-        if (btnLabel === 'Pause') {
-            stopBtn();
-        } else {
-            startBtn();
-        }
-    });
 }
 
 d3.queue()

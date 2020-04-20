@@ -9,14 +9,14 @@ const plot_buttons = (div) => {
         .on('click', playPauseButton);
 
     playPauseIcon = g.append('text')
-        .attr('transform', 'translate(102, 44)')
+        .attr('transform', `translate(${!moving ? 102 : 100}, 44)`)
         .attr('text-anchor', 'middle')
         .attr('font-family', 'FontAwesome')
         .attr('font-size', '20px')
         .attr('cursor', 'pointer')
         .attr('fill', 'white')
         .on('click', playPauseButton)
-        .text(() => '\uf04b');
+        .text(!moving ? '\uf04b' : '\uf04c');
 
     const previousBtn = g.append('circle')
         .attr('class', 'previousBtn svgBtns')

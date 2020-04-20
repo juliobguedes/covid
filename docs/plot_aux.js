@@ -71,7 +71,6 @@ const radioOnClick = (radio) => {
     selectedVariable = radio.getAttribute('name');
     
     // index = 0;
-    moving = false;
     updateColorScale();
     completeCallbackMap();
 };

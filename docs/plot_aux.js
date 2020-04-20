@@ -97,6 +97,12 @@ const yesterday = () => {
     return date;
 };
 
+const getStrDate = (str) => {
+    const splitted = str.split('-');
+    const date = new Date(splitted[0], parseInt(splitted[1]) - 1, splitted[2]);
+    return date;
+}
+
 const tomorrow = () => {
     const date = new Date(startDate.getTime());
     date.setDate(date.getDate() + index + 1);

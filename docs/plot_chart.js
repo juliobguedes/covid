@@ -56,6 +56,7 @@ const chart_ready = (error, data) => {
     if (error) throw error;
 
     completeCallbackChart = () => {
+        plot_chart_upd(data);
         updateMarkers(data);
         checkAndRemoveTag('.chart')
         const chartSvg = d3.select('#chart-vis')

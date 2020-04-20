@@ -53,14 +53,17 @@ const plot_buttons = (div) => {
     updateLabelDate = () => {
         checkAndRemoveTag('.label-date');
 
+        const formattedDate = exibitDate(timeScale.invert(index));
+        const formattedIndex = parseInt(index) + 1;
+
         g.append('text')
             .attr('class', 'label-date')
-            .attr('transform', 'translate(200, 53)')
+            .attr('transform', 'translate(270, 53)')
             .attr('text-anchor', 'middle')
             .attr('font-family', 'CircularStd')
             .attr('font-size', '16px')
             .attr('cursor', 'pointer')
-            .text(`Dia: ${index} de ${getDateIndex(endDate)}`)
+            .text(`Dia: ${formattedIndex} de ${timeScale(endDate) + 1}. ${formattedDate}.`)
     }
 };
 

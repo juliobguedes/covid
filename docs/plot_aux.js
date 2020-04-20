@@ -76,10 +76,7 @@ const radioOnClick = (radio) => {
 };
 
 const startDate = new Date(2020, 0, 22);
-
-const formatDateIntoYear = d3.timeFormat('%d %b %Y');
-const formatDate = d3.timeFormat('%d %b %Y');
-const parseDate = d3.timeParse('%m/%d/%y');
+const exibitDate = d3.timeFormat('%d, %B %Y');
 
 const path = d3.geoPath();
 
@@ -129,9 +126,7 @@ const checkAndRemoveTag = (tagname) => {
 const update = (value, ignore=false) => {
     const oldIndex = index;
     index = getDateIndex(value);
-    if (oldIndex !== index || ignore) {
-        callback();
-    }
+    if (oldIndex !== index || ignore) callback();
 };
 
 const createMarker = (divId, textValue) => {

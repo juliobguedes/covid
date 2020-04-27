@@ -48,7 +48,7 @@ const plot_chart = (data, chartVar, pos) => {
 
     plotSvg.append("text")
         .attr("transform", `translate(${widthStart + chartDimensions.left}, -10) rotate(0)`)
-        .text(legendMapping[chartVar]);
+        .text(languageMapping.legend[chartVar][language]);
 };
 
 
@@ -64,9 +64,11 @@ const chart_ready = (error, data) => {
                 .attr('width', chartDimensions.width)
                 .attr('height', chartDimensions.height);
 
+        const headerLabel = language === 'pt' ? 'Dados de' : 'Data from';
+
         chartSvg.append('text')
             .attr('transform', `translate(${chartDimensions.width / 2}, 25)`)
-            .text(`Data from ${country}`)
+            .text(`${headerLabel} ${country}`);
 
         svgChart = chartSvg.append('g')
             .attr('transform', `translate(0, ${chartDimensions.totalTop})`);

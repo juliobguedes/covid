@@ -18,6 +18,7 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="./languages.js"></script>
     <script src="./plot_aux.js"></script>
     <script src="./plot_map.js"></script>
     <script src="./plot_buttons.js"></script>
@@ -34,87 +35,32 @@
         <h1>
             COVID-19 Timeline
         </h1>
+        <div class="language-a">
+            <p id="change-lang" onclick="changeLanguage()"></p>
+        </div>
     </div>
     <div id="early-text" class="text-section">
-        <p>
-            🇧🇷 Caso você esteja visualizando num celular ou algum outro dispositivo móvel,
-            recomendo que habilite a rotação de tela, coloque o dispositivo na horizontal, e
-            recarregue a página. As visualizações são interativas: colocar o mouse acima ou
-            clicar num país mostra dados que não estão visíveis de imediato.
-        </p>
-        <hr>
-        <p>
-            🇬🇧 If you are seeing this in a mobile device or a cellphone, I strongly recommend
-            put your device in the horizontal mode and reload the page. The visualizations have
-            interactions: hovering and clicking in countries will show data not immediately visible.
-        </p>
     </div>
     <div id="map-vis" class="box-shadow">
         <div id="radios">
             <div class="radio-1 radio-all active" name="confirmed" onclick="radioOnClick(this)">
                 <div id="confirmed-number"></div>
-                <p>Casos Confirmados</p>
+                <p id="confirmed-label"></p>
             </div>
             <div class="radio-2 radio-all" name="deaths" onclick="radioOnClick(this)">
                 <div id="deaths-number"></div>
-                <p>Óbitos</p>
+                <p id="deaths-label"></p>
             </div>
             <div class="radio-3 radio-all" name="recovered" onclick="radioOnClick(this)">
                 <div id="recovered-number"></div>
-                <p>Recuperações</p>
+                <p id="recovered-label"></p>
             </div>
         </div>
         <div id="legend"></div>
         <div id="map"></div>
     </div>
     <div id="chart-vis" class="box-shadow"></div>
-    <div id="later-text" class="text-section">
-        <p>
-            🇧🇷 O site ainda está em desenvolvimento. Fique a vontade para contribuir,
-            melhorando o nosso conteúdo, ou fornecendo novas fontes de dados.
-        </p>
-        <p>
-            Os dados que estamos usando foram obtidos
-            <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">pelo site</a>
-            e pelo
-            <a href="https://github.com/CSSEGISandData/COVID-19">repositório no GitHub</a>
-            da universidade Johns Hopkins, nos Estados Unidos. O código é
-            <a href="https://github.com/juliobguedes/covid">Open Source</a>.
-            Sinta-se livre e encorajado para sugerir adições, modificações, abrir issues, pull
-            requests, ou entrar em contato.
-        </p>
-        <p>
-            Os dados desta página estão sendo atualizados manualmente todos os dias,
-            através dos scripts contidos no repositório. Assim, é possível que,
-            pouco após meia noite ou durante a madrugada, a página ainda esteja
-            desatualizada.
-        </p>
-        <p>
-            Se você está interessado em dados do Brasil, recomendo que veja
-            <a href="https://www.kaggle.com/elloaguedes/panorama-do-covid-19-no-brasil">
-            este kernel no kaggle</a>, que mostra muito bem a situação de cada estado.
-            Além disso, lá você poderá encontrar exemplos de como aplicar técnicas de
-            aprendizagem de máquina para prever o número de casos de COVID-19 no Brasil.
-        </p>
-        <hr>
-        <p>
-            🇬🇧 The website is still in development. Feel free to contribute, improving
-            the content, or suggesting new data sources.
-        </p>
-        <p>
-            The datasets were obtained from the Johns Hopkins University
-            <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">website</a>
-            and <a href="https://github.com/CSSEGISandData/COVID-19">GitHub repository</a>. The code
-            <a href="https://github.com/juliobguedes/covid">is Open Source.</a>.
-            Feel free and encouraged to suggest additions, modifications, open issues,
-            pull requests, or to contact.
-        </p>
-        <p>
-            The data is being manually updated every day, using the scripts in the
-            repository. It ss possible that the data is outdated, which means
-            that it will not contain information about the day before you are seeing it.
-        </p>
-    </div>
+    <div id="later-text" class="text-section"></div>
     <div class="contact-links">
         <p>&copy; Júlio Guedes 2020</p>
         <p>

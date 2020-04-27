@@ -23,6 +23,7 @@ const step = () => {
 };
 
 const ready = (error, data) => {
+    index = data.features[0].properties.confirmed.length - 1;
     if (error) throw error;
 
     const width = 1000;

@@ -57,26 +57,22 @@ const colorMapping = {
     },
 };
 
-const legendMapping = {
-    confirmed: 'Total de Casos Confirmados',
-    deaths: 'Total de Óbitos',
-    recovered: 'Total de Recuperações',
-};
-
 const radioOnClick = (radio) => {
     for (let item of radio.parentNode.children) {
         item.classList.remove('active');
     }
     radio.classList.add('active');
     selectedVariable = radio.getAttribute('name');
-    
-    // index = 0;
+
     updateColorScale();
     completeCallbackMap();
 };
 
 const startDate = new Date(2020, 0, 22);
-const exibitDate = d3.timeFormat('%d, %B %Y');
+const exibitDate = d3.timeFormat('%B %d, %Y');
+const formatDay = d3.timeFormat('%d');
+const formatMonth = d3.timeFormat('%m');
+const formatYear = d3.timeFormat('%Y');
 
 const path = d3.geoPath();
 
@@ -138,6 +134,7 @@ const update = (value, ignore=false) => {
 const createMarker = (divId, textValue) => {
     checkAndRemoveTag(`.${divId}`);
 
+    const valueAsText = languageMapping.marker(textValue);
     d3.select(`#${divId}`)
         .append('svg')
             .attr('class', `${divId}`)
@@ -146,7 +143,7 @@ const createMarker = (divId, textValue) => {
         .append('text')
             .attr('class', 'marker')
             .attr('text-anchor', 'start')
-            .text(`${textValue}`)
+            .text(`${valueAsText}`)
             .attr('font-size', '28px')
             .attr('font-family', 'CircularStd')
             .attr('transform', `translate(0, 25)`);

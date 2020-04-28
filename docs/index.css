@@ -108,8 +108,16 @@ label {
 }
 
 .header-wrapper {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
     border-bottom: solid #e0e0e0 1px;
     cursor: default;
+}
+
+.language-a {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline blue;
 }
 
 .text-section {

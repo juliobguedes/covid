@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 import subprocess, sys, os, json
 
+print('Downloading Johns Hopkins Dataset')
+subprocess.call('./download_johns.sh', shell=True)
+
 print('Running data transformation: Map')
 
 datapath = '../data'
@@ -161,3 +164,6 @@ with open(f'{datapath}/covid_chart.json', 'w') as covid_chart:
 
 print('Running map generation')
 subprocess.call('./update.sh', shell=True)
+
+print('Pushing to git')
+subprocess.call('./push_to_git.sh', shell=True)

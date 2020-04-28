@@ -25,12 +25,11 @@ let tooltipDiv;
 
 // Variables related with the slider
 let moving = false;
-let sliderCurrentValue;
-let sliderTargetValue;
-let slider;
-let handle;
-let label;
 let timeScale;
+let updateLabelDate;
+
+// Buttons variables
+let playPauseIcon;
 
 // Chart variables
 const chartDimensions = {
@@ -58,26 +57,22 @@ const colorMapping = {
     },
 };
 
-const legendMapping = {
-    confirmed: 'Total de Casos Confirmados',
-    deaths: 'Total de Óbitos',
-    recovered: 'Total de Recuperações',
-};
-
 const radioOnClick = (radio) => {
-    selectedVariable = radio.value;
-    sliderCurrentValue = dimensions.margin;
-    index = 0;
-    moving = false;
+    for (let item of radio.parentNode.children) {
+        item.classList.remove('active');
+    }
+    radio.classList.add('active');
+    selectedVariable = radio.getAttribute('name');
+
     updateColorScale();
     completeCallbackMap();
 };
 
 const startDate = new Date(2020, 0, 22);
-
-const formatDateIntoYear = d3.timeFormat('%d %b %Y');
-const formatDate = d3.timeFormat('%d %b %Y');
-const parseDate = d3.timeParse('%m/%d/%y');
+const exibitDate = d3.timeFormat('%B %d, %Y');
+const formatDay = d3.timeFormat('%d');
+const formatMonth = d3.timeFormat('%m');
+const formatYear = d3.timeFormat('%Y');
 
 const path = d3.geoPath();
 
@@ -123,5 +118,41 @@ const checkAndRemoveTag = (tagname) => {
         d3.select(tagname).remove();
     }
 };
+
+const update = (value, ignore=false) => {
+    const oldIndex = index;
+    index = getDateIndex(value);
+    if (oldIndex !== index || ignore) callback();
+};
+
+const createMarker = (divId, textValue) => {
+    checkAndRemoveTag(`.${divId}`);
+
+    const valueAsText = languageMapping.marker(textValue);
+    d3.select(`#${divId}`)
+        .append('svg')
+            .attr('class', `${divId}`)
+            .attr('width', '100%')
+            .attr('height', '30px')
+        .append('text')
+            .attr('class', 'marker')
+            .attr('text-anchor', 'start')
+            .text(`${valueAsText}`)
+            .attr('font-size', '28px')
+            .attr('font-family', 'CircularStd')
+            .attr('transform', `translate(0, 25)`);
+}
+
+const updateMarkers = (chartData) => {
+    const lastIndex = chartData[country] ? chartData[country].data.length -1 : undefined;
+    const lastChart = lastIndex ? chartData[country].data[lastIndex] : undefined;
+    const confirmed = lastChart ? lastChart.confirmed : '-';
+    const deaths = lastChart ? lastChart.deaths : '-';
+    const recovered = lastChart ? lastChart.recovered : '-';
+
+    createMarker('confirmed-number', confirmed);
+    createMarker('deaths-number', deaths);
+    createMarker('recovered-number', recovered);
+}
 
 const endDate = yesterday();

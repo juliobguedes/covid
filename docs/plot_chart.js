@@ -47,8 +47,8 @@ const plot_chart = (data, chartVar, pos) => {
         .call(d3.axisLeft(chartAxis[chartVar].y));
 
     plotSvg.append("text")
-        .attr("transform", `translate(${widthStart + chartDimensions.left}, 0) rotate(0)`)
-        .text(legendMapping[chartVar]);
+        .attr("transform", `translate(${widthStart + chartDimensions.left}, -10) rotate(0)`)
+        .text(languageMapping.legend[chartVar][language]);
 };
 
 
@@ -56,6 +56,7 @@ const chart_ready = (error, data) => {
     if (error) throw error;
 
     completeCallbackChart = () => {
+        updateMarkers(data);
         checkAndRemoveTag('.chart')
         const chartSvg = d3.select('#chart-vis')
             .append('svg')
@@ -63,9 +64,11 @@ const chart_ready = (error, data) => {
                 .attr('width', chartDimensions.width)
                 .attr('height', chartDimensions.height);
 
+        const headerLabel = language === 'pt' ? 'Dados de' : 'Data from';
+
         chartSvg.append('text')
             .attr('transform', `translate(${chartDimensions.width / 2}, 25)`)
-            .text(`Data from ${country}`)
+            .text(`${headerLabel} ${country}`);
 
         svgChart = chartSvg.append('g')
             .attr('transform', `translate(0, ${chartDimensions.totalTop})`);

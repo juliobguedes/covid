@@ -18,150 +18,51 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script src="./languages.js"></script>
     <script src="./plot_aux.js"></script>
-    <script src="./plot_slider.js"></script>
     <script src="./plot_map.js"></script>
+    <script src="./plot_buttons.js"></script>
     <script src="./plot_legend_scale.js"></script>
     <script src="./plot_chart.js"></script>
     <script src="./index.js"></script>
 
+    <link rel="stylesheet" href="./fonts.css">
     <link rel="stylesheet" href="./index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <h1>COVID-19 Timeline Overview</h1>
+    <div class="header-wrapper">
+        <h1>
+            COVID-19 Timeline
+        </h1>
+        <div class="language-a">
+            <p id="change-lang" onclick="changeLanguage()"></p>
+        </div>
+    </div>
     <div id="early-text" class="text-section">
-        <p>
-            🇧🇷 Bem vindo a Timeline do COVID-19. O objetivo principal desta página
-            é mostrar como a doença se espalhou pelo mundo a medida que o tempo passa.
-            Recomendo fortemente que veja esta página num browser web, num computador,
-            já que não foi criada com a intenção de ser responsiva, e por isso pode
-            não funcionar como esperado em disposítivos móveis. Caso você esteja
-            visualizando num celular ou algum outro dispositivo móvel, recomendo que
-            habilite a rotação de tela, coloque o dispositivo na horizontal, e
-            recarregue a página. O grande objetivo aqui é transmitir a informação contida.
-        </p>
-        <p>
-            Os dados utilizados nas visualizações foram obtidos
-            <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">pelo site</a>
-            e pelo
-            <a href="https://github.com/CSSEGISandData/COVID-19">repositório no GitHub</a>
-            da universidade Johns Hopkins, nos Estados Unidos. O código que gera os gráficos e o
-            mapa estão disponíveis
-            <a href="https://github.com/juliobguedes/covid">neste repositório do GitHub</a>.
-            Sinta-se livre e encorajado para sugerir adições, modificações, abrir issues e pull
-            requests no repositório. Ao fim da página, alguns links de contato estão disponíveis.
-        </p>
-        <p>
-            Na visualização abaixo, existem dados que não são visíveis de imediato. Ao colocar
-            o mouse em cima de algum país numa data específica, você verá um breve relato da
-            situação do país naquele dia. Ao clicar em um país, os gráficos abaixo do mapa serão
-            atualizados para mostrar os dados do país clicado ao invés dos dados do mundo. Além
-            disso, também existem os botões que permite que você altere a variável que está sendo
-            visualizada na cor do mapa.
-        </p>
-        <p>
-            No momento, os dados desta página estão sendo atualizados manualmente todos os dias,
-            utilizando os scripts contidos no repositório. Dessa forma, é possível que caso
-            acesse pouco após meia noite ou durante a madrugada, a página ainda não esteja
-            atualizada com os dados do dia anterior.
-        </p>
-        <p>
-            Se você está interessado em dados do Brasil, recomendo que veja
-            <a href="https://www.kaggle.com/elloaguedes/panorama-do-covid-19-no-brasil">
-            este kernel no kaggle</a>, que mostra muito bem a situação de cada estado.
-            Além disso, lá você poderá encontrar exemplos de como aplicar técnicas de
-            aprendizagem de máquina para prever o número de casos de COVID-19 no Brasil.
-        </p>
-        <hr>
-        <p>
-            🇬🇧 Welcome to the COVID-19 Timeline Overview. The main objective of this page
-            is to give an overview look about how the disease spread in the world as
-            the time passes. I recommend you to see this page in a web browser:
-            it was not made to be responsive, which means that it might not work as
-            intended in mobile devices. If you are still seeing this in a mobile device
-            or a cellphone, I strongly recommend you to allow screen rotation, put your
-            device in the horizontal, and reload the page. The main goal here is to share
-            and visualize the information here contained.
-        </p>
-        <p>
-            The data used to generated the visualizations were obtained from the Johns
-            Hopkins University
-            <a href="https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases">website</a>
-            and <a href="https://github.com/CSSEGISandData/COVID-19">GitHub repository</a>. The code
-            that generates the plots and the map are available in
-            <a href="https://github.com/juliobguedes/covid">my GitHub repository</a>.
-            Feel free and encouraged to suggest additions, modifications, open issues and
-            pull requests. At the end of the page, a few contact links are available.
-        </p>
-        <p>
-            In the visualization below, some information is not immediately visible. When hovering
-            a country in a specific date, you will see a brief report of the country situation in
-            that date. When you click a country, the charts below the map will be updated to show
-            the data of that country, instead of the world data. Besides that, when clicking in the
-            buttons above the map, you can change the variable that is being displayed as the
-            countries color. In order, the variables are: Number of confirmed cases; Number of
-            deaths; and number of recovered cases.
-        </p>
-        <p>
-            So far, the data is being manually updated every day, using the scripts in the
-            repository. This considered, its possible that the data is outdated, which means
-            that it will not contain information about the day before you are seeing it.
-        </p>
     </div>
     <div id="map-vis" class="box-shadow">
         <div id="radios">
-            <div class="radio-1">
-                <input
-                    type="radio"
-                    name="selectedVar"
-                    id="radio-confirmed"
-                    onclick="radioOnClick(this)"
-                    value="confirmed" checked="checked">
-                <label for="radio-confirmed">Casos Confirmados</label>
+            <div class="radio-1 radio-all active" name="confirmed" onclick="radioOnClick(this)">
+                <div id="confirmed-number"></div>
+                <p id="confirmed-label"></p>
             </div>
-            <div class="radio-2">
-                <input
-                    type="radio"
-                    name="selectedVar"
-                    id="radio-deaths"
-                    onclick="radioOnClick(this)"
-                    value="deaths">
-                <label for="radio-deaths">Casos de Óbito</label>
+            <div class="radio-2 radio-all" name="deaths" onclick="radioOnClick(this)">
+                <div id="deaths-number"></div>
+                <p id="deaths-label"></p>
             </div>
-            <div class="radio-3">
-                <input
-                    type="radio"
-                    name="selectedVar"
-                    id="radio-recovered"
-                    onclick="radioOnClick(this)"
-                    value="recovered">
-                <label for="radio-recovered">Casos de Recuperação</label>
+            <div class="radio-3 radio-all" name="recovered" onclick="radioOnClick(this)">
+                <div id="recovered-number"></div>
+                <p id="recovered-label"></p>
             </div>
         </div>
         <div id="legend"></div>
         <div id="map"></div>
-        <div id="slider"></div>
-        <div id="button-container">
-            <button id="start-button">Start</button>
-        </div>
     </div>
     <div id="chart-vis" class="box-shadow"></div>
-    <div id="later-text" class="text-section">
-        <p>
-            🇧🇷 O site ainda está em desenvolvimento, o que pode ser visto caso você acesse os
-            notebooks contidos no repositório. Assim, fique a vontade para contribuir e
-            melhorar o conteúdo, incluindo informações sobre a doença e regiões infectadas.
-        </p>
-        <hr>
-        <p>
-            🇬🇧 The website is still in development and that can be seen if you access the
-            notebooks in the repository. Therefore, feel free to contribute and improve
-            the contents, including information about the disease and infected regions.
-        </p>
-    </div>
+    <div id="later-text" class="text-section"></div>
     <div class="contact-links">
-        <p>&copy; Júlio Guedes</p>
+        <p>&copy; Júlio Guedes 2020</p>
         <p>
             <i name="email-icon" class="fa fa-envelope"></i>
             <label for="email-icon">

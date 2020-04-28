@@ -53,23 +53,31 @@ const plot_buttons = (div) => {
     updateLabelDate = () => {
         checkAndRemoveTag('.label-date');
 
-        const formattedDate = exibitDate(timeScale.invert(index));
+        const date = timeScale.invert(index);
         const formattedIndex = parseInt(index) + 1;
+        const translateX = language === 'pt'
+            ? '295' : '277';
+
+        const textDate = languageMapping.dateToText(date);
+
+        const text = languageMapping
+            .buttonsText[language](formattedIndex, timeScale(endDate) + 1, textDate);
 
         g.append('text')
             .attr('class', 'label-date')
-            .attr('transform', 'translate(270, 53)')
+            .attr('transform', `translate(${translateX}, 53)`)
             .attr('text-anchor', 'middle')
             .attr('font-family', 'CircularStd')
             .attr('font-size', '16px')
             .attr('cursor', 'pointer')
-            .text(`Dia: ${formattedIndex} de ${timeScale(endDate) + 1}. ${formattedDate}.`)
+            .text(text);
     }
 };
 
 const playPauseButton = () => {
     const text = playPauseIcon.text();
     if (text === '\uf04b') {
+        index = index === getDateIndex(endDate) ? -1 : index;
         startBtn();
     } else {
         stopBtn();

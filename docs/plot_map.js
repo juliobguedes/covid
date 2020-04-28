@@ -13,13 +13,9 @@ const plotMap = (data) => {
         .attr('class', 'country-path')
         .attr('fill', (d) => {
             const variable = d.properties[selectedVariable];
-            if (!variable) {
-                return '#c0c0c0';
-            }
+            if (!variable) return '#c0c0c0';
             const colorValue = variable[index];
-            if (colorValue === 0) {
-                return '#fff';
-            }
+            if (colorValue === 0) return '#fff';
             return colorScale(colorValue);
         })
         .attr('d', path)
@@ -43,13 +39,7 @@ const mouseOut = (d) => {
 };
 
 const mouseMove = (d) => {
-    const singleCase = !d.properties.country ? null : d.properties.confirmed[index] === 1;
-    const text = !d.properties.country
-        ? `Country: ${d.properties.COUNTRY}. No data was provided.`
-        : `Country: ${d.properties.COUNTRY}. In ${d.properties.dates[index]},
-        this country had reported ${d.properties.confirmed[index]} confirmed case${singleCase ? '' : 's'},
-        ${d.properties.deaths[index]} cases of death, and ${d.properties.recovered[index]}
-        cases of recovery`;
+    const text = languageMapping.tooltip[language](d);
     tooltipDiv.text(text)
         .style("left", `${d3.event.pageX + dimensions.margin / 3}px`)
         .style("top", `${d3.event.pageY - 12}px`);

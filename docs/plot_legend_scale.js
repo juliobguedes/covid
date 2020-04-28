@@ -5,7 +5,9 @@ const plot_legend = () => {
         .append('svg')
         .attr('class', 'legend-class')
         .attr('width', dimensions.width)
-        .attr('height', '50');
+        .attr('height', '75');
+
+    plot_buttons(legendDiv);
 
     const linearColor = d3.scaleLinear()
         .domain([0, 10000])
@@ -38,11 +40,13 @@ const plot_legend = () => {
         .attr("fill", "#000")
         .attr("text-anchor", "start")
         .attr("font-weight", "bold")
-        .text(legendMapping[selectedVariable]);
+        .text(languageMapping.legend[selectedVariable][language]);
+
+    const legendLabel = language === 'pt' ? ' casos' : ' cases';
       
     g.call(d3.axisBottom(linearColor)
         .tickSize(13)
-        .tickFormat(function(x, i) { return (i ? x : x + " casos"); })
+        .tickFormat(function(x, i) { return (i ? x : x + legendLabel); })
         .tickValues(colorScale.domain()))
     .select(".domain")
         .remove();

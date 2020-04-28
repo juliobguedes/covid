@@ -37,6 +37,22 @@
     stroke-width: 1.25px;
 }
 
+.svgBtns {
+    background-color: #000;
+    cursor: pointer;
+}
+
+svg text {
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+svg text::selection {
+    background: none;
+}
+
 /* CSS RELATED TO THE HTML AND PAGE STRUCTURE */
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
@@ -92,7 +108,16 @@ label {
 }
 
 .header-wrapper {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
     border-bottom: solid #e0e0e0 1px;
+    cursor: default;
+}
+
+.language-a {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline blue;
 }
 
 .text-section {

@@ -25,12 +25,11 @@ let tooltipDiv;
 
 // Variables related with the slider
 let moving = false;
-let sliderCurrentValue;
-let sliderTargetValue;
-let slider;
-let handle;
-let label;
 let timeScale;
+let updateLabelDate;
+
+// Buttons variables
+let playPauseIcon;
 
 // Chart variables
 const chartDimensions = {
@@ -58,31 +57,22 @@ const colorMapping = {
     },
 };
 
-const legendMapping = {
-    confirmed: 'Total de Casos Confirmados',
-    deaths: 'Total de Óbitos',
-    recovered: 'Total de Recuperações',
-};
-
 const radioOnClick = (radio) => {
     for (let item of radio.parentNode.children) {
         item.classList.remove('active');
     }
     radio.classList.add('active');
-    
     selectedVariable = radio.getAttribute('name');
-    sliderCurrentValue = dimensions.margin;
-    index = 0;
-    moving = false;
+
     updateColorScale();
     completeCallbackMap();
 };
 
 const startDate = new Date(2020, 0, 22);
-
-const formatDateIntoYear = d3.timeFormat('%d %b %Y');
-const formatDate = d3.timeFormat('%d %b %Y');
-const parseDate = d3.timeParse('%m/%d/%y');
+const exibitDate = d3.timeFormat('%B %d, %Y');
+const formatDay = d3.timeFormat('%d');
+const formatMonth = d3.timeFormat('%m');
+const formatYear = d3.timeFormat('%Y');
 
 const path = d3.geoPath();
 
@@ -129,9 +119,16 @@ const checkAndRemoveTag = (tagname) => {
     }
 };
 
+const update = (value, ignore=false) => {
+    const oldIndex = index;
+    index = getDateIndex(value);
+    if (oldIndex !== index || ignore) callback();
+};
+
 const createMarker = (divId, textValue) => {
     checkAndRemoveTag(`.${divId}`);
 
+    const valueAsText = languageMapping.marker(textValue);
     d3.select(`#${divId}`)
         .append('svg')
             .attr('class', `${divId}`)
@@ -140,7 +137,7 @@ const createMarker = (divId, textValue) => {
         .append('text')
             .attr('class', 'marker')
             .attr('text-anchor', 'start')
-            .text(`${textValue}`)
+            .text(`${valueAsText}`)
             .attr('font-size', '28px')
             .attr('font-family', 'CircularStd')
             .attr('transform', `translate(0, 25)`);

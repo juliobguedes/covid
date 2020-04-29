@@ -62,8 +62,8 @@ const languageMapping = {
         en: 'Confirmed Cases',
     },
     deathsLabel: {
-        pt: 'Óbitos',
-        en: 'Deaths'
+        pt: 'Óbitos/Letalidade',
+        en: 'Deaths/Lethality'
     },
     recoveredLabel: {
         pt: 'Recuperados',
@@ -132,7 +132,11 @@ const languageMapping = {
             return l + sep;
         });
         return valueAsText.reverse().join('');
-
+    },
+    formatNumber: (number) => {
+        if (language === 'en') return `${number}`;
+        const numberAsText = `${number}`.replace('.', ',');
+        return numberAsText;
     }
 }
 

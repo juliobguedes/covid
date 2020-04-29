@@ -82,6 +82,14 @@ const languageMapping = {
             pt: 'Total de Recuperações',
             en: 'Total Recoveries',
         },
+        xLabel: {
+            pt: 'Data',
+            en: 'Date'
+        },
+        yLabel: {
+            pt: 'Indivíduos',
+            en: 'Individuals'
+        }
     },
     buttonsText: {
         pt: (p1, p2, p3) => `Dia: ${p1} de ${p2}. ${p3}.`,
@@ -132,7 +140,6 @@ const languageMapping = {
             return l + sep;
         });
         return valueAsText.reverse().join('');
-
     }
 }
 

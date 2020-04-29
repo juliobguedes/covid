@@ -38,6 +38,8 @@ const chartDimensions = {
 };
 let callbackChart;
 const chartAxis = {};
+let chartXAxis;
+let chartYAxis;
 
 // General Variables, Mappings and Functions
 

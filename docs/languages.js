@@ -89,6 +89,20 @@ const languageMapping = {
         yLabel: {
             pt: 'Indivíduos',
             en: 'Individuals'
+        },
+        chart: {
+            pt: {
+                confirmed: 'Confirmados',
+                deaths: 'Óbitos',
+                recovered: 'Recuperados',
+                double: 'Dobram'
+            },
+            en: {
+                confirmed: 'Confirmed',
+                deaths: 'Deaths',
+                recovered: 'Recovered',
+                double: 'Double'
+            }
         }
     },
     buttonsText: {

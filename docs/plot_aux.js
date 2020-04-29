@@ -41,7 +41,7 @@ const chartAxis = {};
 let chartXAxis;
 let chartYLinearAxis;
 let chartYLogAxis;
-let chartScale = 'log';
+let chartScale = 'absolute';
 
 // General Variables, Mappings and Functions
 

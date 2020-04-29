@@ -37,10 +37,12 @@ const plot_chart_upd = (data) => {
             .attr('height', chartDim.height)
         .append('g');
 
-    getDoublingLine(chartData, 1, maxValue(), g, '#9ecae1');
-    getDoublingLine(chartData, 2, maxValue(), g, '#9ecae1');
-    getDoublingLine(chartData, 4, maxValue(), g, '#9ecae1');
-    getDoublingLine(chartData, 7, maxValue(), g, '#9ecae1');
+    if (chartScale === 'log') {
+        getDoublingLine(chartData, 1, maxValue(), g, '#9ecae1');
+        getDoublingLine(chartData, 2, maxValue(), g, '#9ecae1');
+        getDoublingLine(chartData, 4, maxValue(), g, '#9ecae1');
+        getDoublingLine(chartData, 7, maxValue(), g, '#9ecae1');
+    }
 
     plotLine(g, chartData, 'recovered', 'green');
     plotLine(g, chartData, 'deaths', 'orange');
@@ -69,6 +71,8 @@ const plot_chart_upd = (data) => {
     g.append('text')
         .attr('transform', `translate(${chartDim.width / 2}, 15)`)
         .text(`${headerLabel} ${country}`);
+
+    plotChartLegend(g);
 };
 
 const getDoublingLine = (data, mod, max, g, color) => {
@@ -81,20 +85,21 @@ const getDoublingLine = (data, mod, max, g, color) => {
         return d;
     });
     doubleData = doubleData.filter(d => d.double);
-    plotLine(g, doubleData, 'double', color, dots=false);
+    plotLine(g, doubleData, 'double', color, mod, dots=false);
 };
 
-const plotLine = (g, data, variable, color, dots=true) => {
+const plotLine = (g, data, variable, color, mod, dots=true) => {
     const x = chartXAxis;
     const y = chartScale === 'absolute' ? chartYLinearAxis : chartYLogAxis;
 
-    console.log(y(2));
-
     if (dots) {
+        checkAndRemoveTag(`.dot-${variable}-${mod}`);
+
         g.selectAll('dot')
             .data(data)
             .enter()
             .append('circle')
+                .attr('class', `dot-${variable}-${mod}`)
                 .attr('fill', color)
                 .attr('r', '3')
                 .attr('cx', (d) => x(d.date))
@@ -104,8 +109,10 @@ const plotLine = (g, data, variable, color, dots=true) => {
                 });
     }
 
+    checkAndRemoveTag(`.path-${variable}-${mod}`);
     g.append('path')
         .datum(data)
+        .attr('class', `path-${variable}-${mod}`)
         .attr('fill', 'none')
         .attr('stroke', color)
         .attr('stroke-width', dots ? 1 : 2)
@@ -118,3 +125,32 @@ const plotLine = (g, data, variable, color, dots=true) => {
             .curve(d3.curveMonotoneX)
         );
 };
+
+const plotChartLegend = (chartG) => {
+    checkAndRemoveTag('.chart-legend');
+    const g = chartG.append('g')
+        .attr('class', 'chart-legend')
+        .attr('transform', 'translate(900, 50)');
+
+    const { confirmed, deaths, recovered, double } = languageMapping.legend.chart[language];
+
+    plotChartLabel(g, 0, 'blue', confirmed);
+    plotChartLabel(g, 30, 'orange', deaths);
+    plotChartLabel(g, 60, 'green', recovered);
+    if (chartScale === 'log') {
+        plotChartLabel(g, 90, '#9ecae1', double);
+    }
+}
+
+const plotChartLabel = (g, yOffset, color, label) => {
+    g.append('circle')
+        .attr('transform', `translate(0, ${yOffset})`)
+        .attr('r', 5)
+        .attr('fill', color)
+
+    g.append('text')
+        // .attr('text-anchor', 'middle')
+        .attr('transform', `translate(10, ${yOffset + 5})`)
+        .attr('font-size', '14px')
+        .text(label)
+}

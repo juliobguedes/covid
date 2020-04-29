@@ -125,10 +125,13 @@ const update = (value, ignore=false) => {
     if (oldIndex !== index || ignore) callback();
 };
 
-const createMarker = (divId, textValue) => {
+const createMarker = (divId, textValue, optionalText) => {
     checkAndRemoveTag(`.${divId}`);
 
-    const valueAsText = languageMapping.marker(textValue);
+    let valueAsText = languageMapping.marker(textValue);
+    if (optionalText) {
+        valueAsText += `/${languageMapping.formatNumber(optionalText)}%`;
+    }
     d3.select(`#${divId}`)
         .append('svg')
             .attr('class', `${divId}`)
@@ -149,9 +152,10 @@ const updateMarkers = (chartData) => {
     const confirmed = lastChart ? lastChart.confirmed : '-';
     const deaths = lastChart ? lastChart.deaths : '-';
     const recovered = lastChart ? lastChart.recovered : '-';
+    const lethality = lastChart ? Math.floor(1000 * deaths / confirmed) / 10 : '-';
 
     createMarker('confirmed-number', confirmed);
-    createMarker('deaths-number', deaths);
+    createMarker('deaths-number', deaths, lethality);
     createMarker('recovered-number', recovered);
 }
 

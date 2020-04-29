@@ -39,7 +39,9 @@ const chartDimensions = {
 let callbackChart;
 const chartAxis = {};
 let chartXAxis;
-let chartYAxis;
+let chartYLinearAxis;
+let chartYLogAxis;
+let chartScale = 'log';
 
 // General Variables, Mappings and Functions
 

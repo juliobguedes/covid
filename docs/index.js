@@ -60,6 +60,22 @@ const ready = (error, data) => {
     completeCallbackMap();
 }
 
+const chart_ready = (error, data) => {
+    if (error) throw error;
+
+    completeCallbackChart = () => {
+        checkAndRemoveTag('.chart')
+        plot_chart_upd(data);
+        updateMarkers(data);
+    };
+    completeCallbackChart();
+}
+
+
+d3.queue()
+    .defer(d3.json, './data/covid_chart.json')
+    .await(chart_ready);
+
 d3.queue()
     .defer(d3.json, './data/covid_topo_features.json')
     .await(ready);

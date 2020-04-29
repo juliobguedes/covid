@@ -1,7 +1,7 @@
 const plot_chart_upd = (data) => {
     checkAndRemoveTag('.chart-upd');
 
-    const chartDim = { height: 400, width: 900, mwl: 70, mwr: 15, mh: 25 };
+    const chartDim = { height: 400, width: 1000, mwl: 100, mwr: 30, mh: 25 };
 
     const chartData = data[country].data.filter(v => v.confirmed > 0).map(v => {
         if (typeof v.date !== 'object') v.date = getStrDate(v.date);
@@ -19,9 +19,16 @@ const plot_chart_upd = (data) => {
     const maxValue = () => Math.max.apply(Math, chartData.map(d => d.confirmed));
     const bottom = -1 * maxValue() / 20;
 
-    chartYAxis = d3.scaleLinear()
+    chartYLinearAxis = d3.scaleLinear()
         .domain([bottom, maxValue()])
         .range([chartDim.height - chartDim.mh, chartDim.mh]);
+
+    chartYLogAxis = d3.scaleLog()
+        .base(2)
+        .domain([1, maxValue()])
+        .range([chartDim.height - chartDim.mh, chartDim.mh]);
+
+    const yAxisScale = chartScale === 'absolute' ? chartYLinearAxis : chartYLogAxis;
 
     const g = d3.select('#chart-vis-upd')
         .append('svg')
@@ -45,44 +52,43 @@ const plot_chart_upd = (data) => {
 
     g.append('g')
         .attr('transform', `translate(${chartDim.mwl}, 0)`)
-        .call(d3.axisLeft(chartYAxis));
+        .call(d3.axisLeft(yAxisScale));
 
 
     g.append('text')
         .attr('class', 'x-label')
-        .attr('transform', 'translate(785, 370)')
+        .attr('transform', 'translate(840, 370)')
         .text(languageMapping.legend.xLabel[language]);
 
     g.append('text')
         .attr('class', 'y-label')
-        .attr('transform', 'translate(80, 35)')
+        .attr('transform', 'translate(110, 35)')
         .text(languageMapping.legend.yLabel[language]);
+
+    const headerLabel = language === 'pt' ? 'Dados de' : 'Data from';
+    g.append('text')
+        .attr('transform', `translate(${chartDim.width / 2}, 15)`)
+        .text(`${headerLabel} ${country}`);
 };
 
 const getDoublingLine = (data, mod, max, g, color) => {
     let doubleData = [...data];
-    let flag = true;
 
-    doubleData = doubleData.filter((d, i) => i % mod === 0);
+    doubleData = doubleData.filter((d, i) => i % mod === 0 || i === data.length - 1);
     doubleData = doubleData.map((d, i) => {
         let double = Math.pow(2, i);
-        if (double <= max || flag) {
-            if (double > Math.min(max, double)) {
-                double = max;
-                flag = false;
-            }
-            d.double = double;
-        };
+        if (double <= max) d.double = double;
         return d;
     });
     doubleData = doubleData.filter(d => d.double);
-    console.log(doubleData);
     plotLine(g, doubleData, 'double', color, dots=false);
 };
 
 const plotLine = (g, data, variable, color, dots=true) => {
     const x = chartXAxis;
-    const y = chartYAxis;
+    const y = chartScale === 'absolute' ? chartYLinearAxis : chartYLogAxis;
+
+    console.log(y(2));
 
     if (dots) {
         g.selectAll('dot')
@@ -92,7 +98,10 @@ const plotLine = (g, data, variable, color, dots=true) => {
                 .attr('fill', color)
                 .attr('r', '3')
                 .attr('cx', (d) => x(d.date))
-                .attr('cy', (d) => y(d[variable]));
+                .attr('cy', (d) => {
+                    const v = d[variable];
+                    return y(v > 0 ? v : 1);
+                });
     }
 
     g.append('path')
@@ -102,7 +111,10 @@ const plotLine = (g, data, variable, color, dots=true) => {
         .attr('stroke-width', dots ? 1 : 2)
         .attr('d', d3.line()
             .x((d) => x(d.date))
-            .y((d) => y(d[variable]))
+            .y((d) => {
+                const v = d[variable];
+                return y(v > 0 ? v : 1);
+            })
             .curve(d3.curveMonotoneX)
         );
 };

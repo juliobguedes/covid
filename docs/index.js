@@ -63,3 +63,17 @@ const ready = (error, data) => {
 d3.queue()
     .defer(d3.json, './data/covid_topo_features.json')
     .await(ready);
+
+const bodyfetch = {
+    url: 'summoner/v4/summoners/by-name/ianncarvalho'
+};
+
+fetch('http://localhost:8001/lolapi/', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(bodyfetch)
+})
+    .then(res => res.json())
+    .then(res => console.log(res));

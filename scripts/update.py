@@ -164,6 +164,3 @@ with open(f'{datapath}/covid_chart.json', 'w') as covid_chart:
 
 print('Running map generation')
 subprocess.call('./update.sh', shell=True)
-
-print('Pushing to git')
-subprocess.call('./push_to_git.sh', shell=True)
